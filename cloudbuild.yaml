@@ -2,7 +2,7 @@
 substitutions:
   _REGION: us-west1
   _REPO: citizenscience-artifact-repository
-  _SERVICE: citizenscience-app
+  _SERVICE: citizenscience-app-$BRANCH_NAME
 
 steps:
   # Build
@@ -13,7 +13,7 @@ steps:
       - -t
       - ${_REGION}-docker.pkg.dev/$PROJECT_ID/${_REPO}/${_SERVICE}:$COMMIT_SHA
       - -t
-      - ${_REGION}-docker.pkg.dev/$PROJECT_ID/${_REPO}/${_SERVICE}:latest
+      - ${_REGION}-docker.pkg.dev/$PROJECT_ID/${_REPO}/${_SERVICE}:$BRANCH_NAME
       - .
 
   # Push
@@ -30,13 +30,13 @@ steps:
       - run
       - deploy
       - ${_SERVICE}
-      - --image=${_REGION}-docker.pkg.dev/$PROJECT_ID/${_REPO}/${_SERVICE}:$COMMIT_SHA
+      - --image=${_REGION}-docker.pkg.dev/$PROJECT_ID/${_REPO}/${_SERVICE}:$BRANCH_NAME
       - --region=${_REGION}
       - --project=$PROJECT_ID
 
 images:
   - ${_REGION}-docker.pkg.dev/$PROJECT_ID/${_REPO}/${_SERVICE}:$COMMIT_SHA
-  - ${_REGION}-docker.pkg.dev/$PROJECT_ID/${_REPO}/${_SERVICE}:latest
+  - ${_REGION}-docker.pkg.dev/$PROJECT_ID/${_REPO}/${_SERVICE}:$BRANCH_NAME
 
 options:
   logging: CLOUD_LOGGING_ONLY
