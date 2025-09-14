@@ -32,7 +32,7 @@ public final class MainView extends Main {
         icon.getStyle().setWidth("200px");
         icon.getStyle().setHeight("200px");
 
-        var centerDiv = new Div(icon, new Paragraph("Replace this view with your own main view!"));
+        var centerDiv = new Div(icon, new Paragraph("Hello this is a test of the Cloud Build System!"));
         centerDiv.addClassNames(LumoUtility.Display.FLEX, LumoUtility.FlexDirection.COLUMN,
                 LumoUtility.AlignItems.CENTER);
         contentDiv.add(centerDiv);
