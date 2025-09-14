@@ -1,0 +1,35 @@
+# Build & push your Dockerfile image to Artifact Registry
+substitutions:
+  _REGION: us-west1
+  _REPO: citizenscience-artifact-repository
+  _SERVICE: citizenscience-app
+
+steps:
+  # Build
+  - name: gcr.io/cloud-builders/docker
+    args:
+      - build
+      - -t
+      - ${_REGION}-docker.pkg.dev/$PROJECT_ID/${_REPO}/${_SERVICE}:$COMMIT_SHA
+      - .
+
+  # Push
+  - name: gcr.io/cloud-builders/docker
+    args:
+      - push
+      - ${_REGION}-docker.pkg.dev/$PROJECT_ID/${_REPO}/${_SERVICE}:$COMMIT_SHA
+
+  # (Optional) Deploy to Cloud Run right after push
+  # - name: gcr.io/google.com/cloudsdktool/cloud-sdk
+  #   entrypoint: gcloud
+  #   args:
+  #     - run
+  #     - deploy
+  #     - ${_SERVICE}
+  #     - --image=${_REGION}-docker.pkg.dev/$PROJECT_ID/${_REPO}/${_SERVICE}:$COMMIT_SHA
+  #     - --region=${_REGION}
+  #     - --allow-unauthenticated=false  # require auth (default), explicitly stating
+  #     - --project=$PROJECT_ID
+
+images:
+  - ${_REGION}-docker.pkg.dev/$PROJECT_ID/${_REPO}/${_SERVICE}:$COMMIT_SHA
