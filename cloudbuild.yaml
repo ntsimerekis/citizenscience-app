@@ -23,7 +23,7 @@ steps:
       - --all-tags
       - ${_REGION}-docker.pkg.dev/$PROJECT_ID/${_REPO}/${_SERVICE}
 
-  # (Optional) Deploy to Cloud Run right after push
+  # Deploy to Cloud Run right after push
   - name: gcr.io/google.com/cloudsdktool/cloud-sdk
     entrypoint: gcloud
     args:
@@ -32,7 +32,6 @@ steps:
       - ${_SERVICE}
       - --image=${_REGION}-docker.pkg.dev/$PROJECT_ID/${_REPO}/${_SERVICE}:$COMMIT_SHA
       - --region=${_REGION}
-      - --allow-unauthenticated=false  # require auth (default), explicitly stating
       - --project=$PROJECT_ID
 
 images:
