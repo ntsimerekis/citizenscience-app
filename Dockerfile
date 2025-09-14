@@ -1,3 +1,4 @@
+# syntax=docker/dockerfile:1.7
 FROM ghcr.io/jqlang/jq:latest AS jq-stage
 
 FROM eclipse-temurin:21-jdk AS build
