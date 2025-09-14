@@ -6,22 +6,15 @@ substitutions:
 
 steps:
   # Build
-  - name: gcr.io/cloud-builders/docker
-    env: ['DOCKER_BUILDKIT=1']
+  - name: gcr.io/cloud-builders/mvn
     args:
-      - build
-      - -t
-      - ${_REGION}-docker.pkg.dev/$PROJECT_ID/${_REPO}/${_SERVICE}:$COMMIT_SHA
-      - -t
-      - ${_REGION}-docker.pkg.dev/$PROJECT_ID/${_REPO}/${_SERVICE}:$BRANCH_NAME
-      - .
-
-  # Push
-  - name: gcr.io/cloud-builders/docker
-    args:
-      - push
-      - --all-tags
-      - ${_REGION}-docker.pkg.dev/$PROJECT_ID/${_REPO}/${_SERVICE}
+      - -Pproduction
+      - -B
+      - -q
+      - -DskipTests
+      - -Djib.to.image=${_REGION}-docker.pkg.dev/$PROJECT_ID/${_REPO}/${_SERVICE}
+      - -Djib.to.tags=$COMMIT_SHA,$BRANCH_NAME
+      - com.google.cloud.tools:jib-maven-plugin:build
 
   # Deploy to Cloud Run right after push
   - name: gcr.io/google.com/cloudsdktool/cloud-sdk
