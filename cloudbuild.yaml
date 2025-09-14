@@ -2,7 +2,7 @@
 substitutions:
   _REGION: us-west1
   _REPO: citizenscience-artifact-repository
-  _SERVICE: citizenscience-app-$BRANCH_NAME
+  _SERVICE: citizenscience-app-${BRANCH_NAME}
 
 steps:
   # Build
