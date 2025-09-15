@@ -6,9 +6,8 @@ substitutions:
 
 steps:
   # Build
-  - name: maven:3.9-eclipse-temurin-21
+  - name: gcr.io/cloud-builders/mvn
     args:
-      - mvn
       - -Pproduction
       - -B
       - -q
