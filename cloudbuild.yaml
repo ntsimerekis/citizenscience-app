@@ -6,7 +6,7 @@ substitutions:
 
 steps:
   # Build
-  - name: gcr.io/cloud-builders/mvn
+  - name: gcr.io/cloud-builders/mvn:latest
     args:
       - -Pproduction
       - -B
