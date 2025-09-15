@@ -8,6 +8,7 @@ steps:
   # Build
   - name: maven:3.9-eclipse-temurin-21
     args:
+      - mvn
       - -Pproduction
       - -B
       - -q
