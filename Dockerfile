@@ -1,4 +1,3 @@
-# syntax=docker/dockerfile:1.7
 FROM ghcr.io/jqlang/jq:latest AS jq-stage
 
 FROM eclipse-temurin:21-jdk AS build
@@ -22,8 +21,7 @@ COPY . $HOME
 RUN --mount=type=cache,target=/root/.m2 \
     --mount=type=secret,id=proKey \
     --mount=type=secret,id=offlineKey \
-    sh -c 'chmod +x ./mvnw && \
-    PRO_KEY=$(jq -r ".proKey // empty" /run/secrets/proKey 2>/dev/null || echo "") && \
+    sh -c 'PRO_KEY=$(jq -r ".proKey // empty" /run/secrets/proKey 2>/dev/null || echo "") && \
     OFFLINE_KEY=$(cat /run/secrets/offlineKey 2>/dev/null || echo "") && \
     ./mvnw clean package -Pproduction -DskipTests -Dvaadin.proKey=${PRO_KEY} -Dvaadin.offlineKey=${OFFLINE_KEY}'
 
