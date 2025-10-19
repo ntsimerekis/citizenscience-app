@@ -1,0 +1,71 @@
+@startuml
+title Submit a Species Spotting or Pollution Report (UC1 & 2)
+start
+note right
+    Precondition: User is logged in and on Dashboard
+end note
+
+:Click "Submit New Report";
+if (Select Submission Type) then (Species Spotting)
+    :Enter Species Spotting Submission Details;
+    note right
+        - Scientific name of Species
+        - Time of Day
+        - Date
+        - Temperature (optional)
+        - Altitude (optional)
+        - Location (Plus Code) (optional if photo contains metadata)
+    end note
+    : Click "Upload Photo" button;
+    : Web Browser prompts for file upload;
+    : Extract image GPS metadata;
+
+    if (Photo contains GPS metdata) then (Exists)
+        : Use photo metadata for location attribute;
+    else (Does not exist)
+        : Use manually entered plus code for location attribute;
+    endif
+else (Pollution Report)
+    :Enter Pollution Report details;
+    note right
+        - PM2.5 concentration
+        - PM10 concentration
+        - Time
+        - Date
+        - Averaging Period (how long was the measurement for)
+        - Location (plus code)
+        - Sensor type/model
+    end note
+endif
+: Click "Save" button;
+
+if (Incomplete information)
+    : Display red banner "incomplete submission";
+    : Highlight necessary fields in red;
+else (Information Complete)
+endif
+
+if  (Species Spotting)
+:Ngram Search Species Name;
+    if (Species Name)
+    endif
+
+endif
+
+
+: Persist data submission;
+if ()
+fork
+partition Interact with Map (UC3){
+    :Display Blip on Google Map;
+}
+fork again
+partition Interact with List View (UC8){
+    :Display new row on List;
+}
+fork again
+: Display Confirmation to User;
+end fork
+
+stop
+@enduml

@@ -1,0 +1,47 @@
+@startuml
+title Rectangular Aggregate Selection on Map (UC7)
+
+|User|
+start
+note right: Precondition: User in Map View Mode
+: Click "Rectangular Selection" button;
+
+|UI|
+: Cursor changes to a crosshair;
+:Display hint "Drag to select area";
+
+|User|
+: User drags crosshair across the map;
+
+|UI|
+: Map shows a rectangular transparent selection;
+
+|Backend|
+:Determine coordinates of rectangle;
+:Query repository for reports within bounding box;
+note right: Using PostGIS most likely
+|UI|
+if (If blips inside of selected area) then (Blips Found)
+if (Species Spotting Blips Exist) is (yes) then
+  :Fill in left column with most common species spotted;
+else (no)
+  :Show no species report in selected area;
+endif
+if (Pollution Reporting Blips Exist) is (yes) then
+  :Fill in right column with pollution report;
+else (no)
+  :Show no pollution report in selected area;
+endif
+: Sub-window Appears Containing Averages;
+note right
+Most common species spotted
+Average PM2.5 Pollution
+Average PM10 Pollution
+end note
+
+else (No Blips)
+:Message appears "No items could be found";
+endif
+
+stop
+@enduml

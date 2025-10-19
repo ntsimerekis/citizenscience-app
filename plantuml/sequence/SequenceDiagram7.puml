@@ -1,0 +1,27 @@
+@startuml
+'https://plantuml.com/deployment-diagram
+title  Rectangular Selection (UC7)
+
+actor User
+participant UI
+database SubmissionRepository
+
+activate UI
+User -> UI: Clicks rectangular select
+UI -> User: Changes cursor to crosshair
+User -> UI: Selects an Area
+UI -> UI: Process a Geometry for selection
+UI -> SubmissionRepository: findAllWithinArea(Geometry)
+deactivate UI
+
+activate SubmissionRepository
+SubmissionRepository -> UI: List<Submission>
+deactivate SubmissionRepository
+
+activate UI
+UI -> UI: Processes Average data
+
+UI -> User: Display Window with average information
+deactivate UI
+
+@enduml

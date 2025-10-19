@@ -1,0 +1,31 @@
+@startuml
+title Submit a Pollution Report (UC2)
+start
+note right
+    Precondition: User is logged in and on Dashboard
+end note
+
+:Click "Submit a Pollution Report";
+:Enter text submission details;
+note right
+    - PM2.5 concentration
+    - PM10 concentration
+    - Time
+    - Date
+    - Averaging Period (how long was the measurement for)
+    - Location (plus code)
+    - Sensor type/model
+end note
+
+: Click "Save" button;
+
+if (Incomplete information)
+    : Display red banner "incomplete submission";
+    : Highlight necessary fields in red;
+else (Information Complete)
+endif
+: Persist data submission;
+stop
+
+
+@enduml

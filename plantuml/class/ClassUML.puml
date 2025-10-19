@@ -1,0 +1,155 @@
+@startuml
+
+class Submission {
+    - submissionID: long
+    - user: User
+    - location: Point
+    - note: String
+    - dateTime: LocalDateTime
+    + getSummary(): String
+    + isComplete(): boolean
+}
+
+class SpeciesSpotting {
+    - species: Species
+    - temperature: float
+    - altitude: float
+    - photoUrl: String
+    + validate(): boolean
+}
+
+class Species {
+    - scientificName: String
+    - category: String
+}
+
+class PollutionReport {
+    - location: Point
+    - sensorType: String
+    - user: User
+    - pm25: float
+    - pm10: float
+    - duration: float
+    + averagePM(): Float
+}
+
+class SubmissionUIForm {
+    + display()
+    + collectInput()
+    + validate()
+    + submit()
+}
+
+class ExternalMapUI {
+
+}
+
+class MapController {
+    - loadBlips(fullMapArea: Geometry)
+    - handleBlipClick(blip: Blip)
+    + applyFilters(criteria: FilterCriteria)
+}
+note right
+Map Controller handles input from external MapUI API
+end note
+
+ExternalMapUI --> MapController
+
+class MarkerFeature {
+}
+note right: This as an API Class
+
+class Blip {
+    - color: Color
+    - isClicked: boolean
+    - isExpanded: boolean
+    + display()
+    + hide()
+    + showPopupWindow()
+    + createBlip(submission: Submission)
+}
+
+MarkerFeature <|-- Blip
+
+enum Color {
+    Red
+    Blue
+}
+
+class SubmissionPopUpWindow {
+    + displaySummary()
+    + expandDetails()
+}
+
+class FilterUIComponent {
+    + openFilterPanel()
+    + collectCriteria(): FilterCriteria
+    + clearFilters()
+}
+
+class FilterCriteria {
+    + startDate: LocalDateTime
+    + endDate: LocalDateTime
+    + submissionType: SubmissionType
+    + speciesName: String
+    + minPM25: float
+    + maxPM25: float
+    + minPM10: float
+    + maxPM10: float
+}
+
+class ProfileUI {
+    + showProfile(user: User)
+    + editProfile(user: User)
+}
+
+class User {
+    - userId: long
+    - username: String
+    - fullName: String
+    - email: String
+    - profilePictureURL: String
+    - biography: String
+    - role: UserRole
+
+    + register(username: String, email: String, password: String)
+    + login(password: String): boolean
+    + updateProfile(displayName: String, bio: String, profilePictureUrl: String)
+    + changePassword(oldPassword: String, newPassword: String): boolean
+    + deactivateAccount()
+}
+
+enum UserRole {
+    CITIZEN
+    ADMIN
+    MODERATOR
+}
+
+
+class SubmissionRepository {
+    + saveSubmission(submission: Submission)
+    + findAllWithinArea(area: Geometry): List<Submission>
+    + findByUser(user: User): List<Submission>
+    + filterSubmissions(criteria: FilterCriteria): List<Submission>
+}
+
+class SpeciesRepository {
+    + saveSpecies(species: Species)
+    + ngramSearchSpeciesName(scienctificName: String)
+
+}
+SpeciesRepository "1" o-- "0..*" Species : persists >
+
+Submission <|-- SpeciesSpotting
+Submission <|-- PollutionReport
+SubmissionUIForm "1" --> "1" Submission: creates >
+SpeciesSpotting "1" o-> "1" Species: is >
+Blip "1" *-- "1" Submission : represents >
+Blip "1" *-- "1" SubmissionPopUpWindow : spawns >
+MapController *-- Blip
+FilterUIComponent "1" --> "1" MapController : advises >
+FilterUIComponent "1" --> "0..*" FilterCriteria: generates >
+SubmissionRepository "1" o-- "0..*" Submission : persists >
+ProfileUI "1" --> "1" User : handles >
+User "1" --> "0..*" Submission : owns >
+@enduml

@@ -1,0 +1,43 @@
+@startuml
+title Load and Display Blips on Map (UC3)
+
+|User|
+start
+note right: Precondition: User is in Map View
+
+|UI|
+: Google Map Overlay is Shown;
+repeat
+    :Show loading indicator;
+
+    |User|
+    :User pans/zooms or changes filters;
+
+|UI|
+repeat while (User pans/zooms or filters change) is (yes)
+
+|Repository|
+partition (Retrieve Blips) {
+    : Retrieve Submissions from Repository;
+    partition (Filter Blips) {
+        fork
+        : Filter by Submission Type;
+        fork again
+        : Filter by Date/Time;
+        fork again
+        : Filter by Species;
+        fork again
+        : Filter by PM Levels;
+        end fork
+    }
+}
+
+|UI|
+fork
+: Display Pollution Reports Blips;
+fork again
+: Display Species Spotting Blips;
+end fork
+
+stop
+@enduml

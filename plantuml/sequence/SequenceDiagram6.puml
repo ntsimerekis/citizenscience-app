@@ -1,0 +1,22 @@
+@startuml
+'https://plantuml.com/deployment-diagram
+title Filtering Blips (UC6)
+actor User
+participant FilterUIComponent
+participant MapController
+
+User -> FilterUIComponent: Opens filter Panel
+FilterUIComponent -> FilterUIComponent: openFilterPanel()
+FilterUIComponent -> User: Displays Filter widgets
+
+User -> FilterUIComponent: Set Filter
+User -> FilterUIComponent: Clicks done
+FilterUIComponent -> FilterUIComponent: collectCriteria()
+alt If inconsistency
+    FilterUIComponent -> User: Error message
+    User-> FilterUIComponent: Correction
+end
+
+FilterUIComponent -> MapController: setFilter()
+
+@enduml

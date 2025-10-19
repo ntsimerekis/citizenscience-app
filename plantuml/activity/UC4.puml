@@ -1,0 +1,27 @@
+@startuml
+title Get more details (UC4&5)
+
+|User|
+start
+note right
+Precondition: User is in the Map View
+Precondition: "Blip" on map clicked;
+end note
+|Backend|
+:Retrieve information about corresponding blip;
+
+|UI|
+: Sub-window displays basic information about the report;
+
+
+|User|
+if (User clicks expansion icon) then (clicked)
+    |Backend|
+    : Retrieve complete information;
+    |UI|
+    : Display full contents of the report;
+else (never clicked)
+
+endif
+stop
+@enduml

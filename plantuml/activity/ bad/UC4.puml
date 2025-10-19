@@ -1,0 +1,45 @@
+@startuml
+title View Report Details (Expanding Blip – UC4/5)
+
+|User|
+start
+note right
+  Precondition: User is in Map View
+end note
+
+:Click a "Blip" on the map;
+
+|UI|
+:Display sub-window (popup) with basic report info;
+note right
+  Example fields:
+  - Report type (species or pollution)
+  - Date / Time
+  - Key metric (species name or PM reading)
+end note
+
+|User|
+if (User clicks expansion icon?) then (Yes)
+  |UI|
+  :Request full report details from Repository;
+  |Backend|
+  :Retrieve complete report data;
+  |UI|
+  :Display expanded sub-window;
+  note right
+    Shows:
+    - Reporter name
+    - Full comments
+    - Optional fields (temperature, altitude)
+    - Photo
+  end note
+else (No)
+  |UI|
+  :Keep basic popup visible;
+endif
+
+|User|
+:User may close popup or click another blip;
+
+stop
+@enduml

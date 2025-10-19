@@ -1,0 +1,58 @@
+@startuml
+title Load & Display Blips on Map (filtered + viewport-aware)
+
+|User|
+start
+note right
+  Precondition: User is in Map View
+end note
+
+|UI|
+:Render Google Map overlay;
+:Read current viewport bounds (bbox);
+
+repeat
+  fork
+    :Show loading indicator;
+  fork again
+    |User|
+    :User pans/zooms or changes filters;
+  end fork
+
+  |UI|
+  :Collect filter state (type, date/time, species, PM thresholds);
+  :Debounce (e.g., 250ms);
+
+  |Backend/Repository|
+  :Query submissions with predicate:
+  note right
+    WHERE within(bbox)
+      AND (type ∈ selectedTypes)
+      AND (created_at BETWEEN start..end)
+      AND (species ∈ selectedSpecies?)      -- optional
+      AND (pm values match thresholds?)     -- optional
+  end note
+  :Optionally cluster by tile/zoom level;
+  if (Query success?) then (yes)
+    |UI|
+    if (Any results?) then (yes)
+      fork
+        :Render species markers;
+      fork again
+        :Render pollution markers;
+      end fork
+      :Hide loading indicator;
+    else (no)
+      :Hide loading indicator;
+      :Show "No results in view" empty state;
+    endif
+  else (no)
+    |UI|
+    :Hide loading indicator;
+    :Show error toast "Couldn't load reports";
+  endif
+
+repeat while (User pans/zooms or filters change) is (yes)
+
+stop
+@enduml

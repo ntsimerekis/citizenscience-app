@@ -1,0 +1,34 @@
+@startuml
+'https://plantuml.com/deployment-diagram
+title Navigating the Map and Viewing Submissions (UC 3,4, 5)
+
+actor User
+participant MapController
+participant Blip
+participant SubmissionRepository
+participant SubmissionPopUpWindow
+
+User -> MapController: Drags and Drop
+MapController -> SubmissionRepository:  findAllWithinArea(area: Geometry)
+SubmissionRepository -> MapController: List<Submission>
+
+loop # blips out of sight
+MapController -> Blip: hide()
+end
+
+loop # blips in sight
+MapController -> Blip: createBlip(Submission)
+MapController -> Blip: display()
+end
+
+== Clicking a Blip ==
+User -> MapController: Click a blip
+MapController -> Blip: showPopUpWindow()
+Blip -> SubmissionPopUpWindow: displaySummary()
+
+== Expanding a Blip Window ==
+User -> MapController: Expands a blip
+MapController -> Blip: expandWindow()
+Blip -> SubmissionPopUpWindow: expandDetails()
+
+@enduml

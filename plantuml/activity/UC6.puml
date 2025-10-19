@@ -1,0 +1,50 @@
+@startuml
+title Apply Map Filters (UC6)
+
+|User|
+start
+note right
+Preconditon: User clicks "Filter Button"
+end note
+
+|UI|
+: Open filter menu sub-window;
+note right
+    - Species/Pollution Report (checkboxes)
+    - Date and Time Range
+    - Species
+    - 2.5PM Pollution Range (sliding scale)
+    - 10PM Pollution Range (sliding scale)
+end note
+
+|User|
+:Adjust filter values;
+
+|UI|
+: Record changes;
+: Validate filter;
+
+if (Validation OK?) then (No)
+  :Show inline errors (e.g., "Start date before end date");
+  -> :Wait for user corrections;
+else (Yes)
+endif
+:Compose filter query;
+
+|Repository|
+:Query submissions;
+
+if (Query success?) then (Yes)
+  |UI|
+  if (Any results?) then (Yes)
+    :Update blips with results;
+  else (No)
+    :Show "No results match filters";
+  endif
+else (No)
+  |UI|
+  :Show error "Server Query Error Contact Webmaster";
+endif
+:Optionally click "reset" to reset filter;
+stop
+@enduml

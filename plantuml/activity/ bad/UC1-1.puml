@@ -1,0 +1,102 @@
+@startuml
+title Submit Species Spotting or Pollution Report (UC1 & UC2)
+
+start
+note right
+  Precondition: User is logged in and on Dashboard
+end note
+
+partition User {
+  :Click "Submit New Report";
+}
+
+partition UI {
+  :Display "Select Submission Type";
+}
+
+if (Submission Type?) then (Species)
+  partition UI {
+    :Render Species Spotting form;
+  }
+  partition User {
+    :Enter species, date, time, (opt) temp, (opt) altitude;
+    :Click "Upload Photo";
+    :Choose file in browser dialog;
+  }
+  partition UI {
+    :Extract photo EXIF GPS (if any);
+  }
+  if (Photo has GPS metadata?) then (yes)
+    partition UI {
+      :Set location from EXIF;
+    }
+  else (no)
+    partition User {
+      :Enter Plus Code manually;
+    }
+  endif
+else (Pollution)
+  partition UI {
+    :Render Pollution Report form;
+  }
+  partition User {
+    :Enter PM2.5, PM10, date, time, averaging period,
+     sensor type/model, Plus Code;
+  }
+endif
+
+' ---- Validation loop (client + server) ----
+repeat
+  partition User {
+    :Click "Save";
+  }
+  partition UI {
+    :Client-side validate required fields & formats;
+  }
+  if (Client validation ok?) then (no)
+    partition UI {
+      :Show red banner "Incomplete submission";
+      :Highlight missing/invalid fields;
+    }
+    ' loop continues
+  endif
+
+  partition Backend {
+    :Server-side validate (schema, ranges, required fields);
+    :Rule: Location must exist (EXIF or Plus Code);
+  }
+  if (Server validation ok?) then (no)
+    partition UI {
+      :Show field-level errors from server;
+      :Keep user on form;
+    }
+  endif
+repeat while (Client/Server validation ok?) is (no)
+' ---- End validation loop ----
+
+partition Backend {
+  :Persist submission (transaction);
+  :Generate ID & timestamps;
+}
+
+fork
+  partition UI {
+    :Show success toast;
+  }
+fork again
+  partition Map (UC3) {
+    :Add/refresh blip on map;
+  }
+fork again
+  partition List View (UC8) {
+    :Insert/refresh row in list;
+  }
+end fork
+
+' (Optional future)
+' partition Admin {
+'   :Queue for moderation (if required);
+' }
+
+stop
+@enduml

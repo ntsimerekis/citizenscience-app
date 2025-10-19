@@ -1,0 +1,35 @@
+@startuml
+'https://plantuml.com/deployment-diagram
+title Submitting a Report (UC 1&2)
+
+actor User
+participant UIForm
+participant SubmissionRepository
+participant SpeciesRepository
+
+User -> UIForm: Click start new Submission
+UIForm -> UIForm: display()
+UIForm -> User: Display submission form
+User -> UIForm: Fill in submission form
+UIForm -> UIForm: collectData()
+User -> UIForm: Save submission
+
+alt if Species submission
+UIForm -> SpeciesRepository: ngramSearch()
+SpeciesRepository -> UIForm: corrections
+UIForm -> User: Display correct species name
+end
+
+UIForm -> UIForm: validateInput()
+UIForm -> SubmissionRepository: saveSubmission()
+
+alt
+SubmissionRepository -> UIForm: confirmation
+UIForm -> UIForm: confirmationMessage
+UIForm -> User: Display confirmation message
+else
+SubmissionRepository -> UIForm: error
+UIForm -> UIForm: errorMessage
+UIForm -> User: Display error message
+end
+@enduml
