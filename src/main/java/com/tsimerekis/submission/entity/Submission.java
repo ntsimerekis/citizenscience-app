@@ -1,4 +1,4 @@
-package com.tsimerekis.submission;
+package com.tsimerekis.submission.entity;
 
 import jakarta.persistence.*;
 import org.locationtech.jts.geom.Point;

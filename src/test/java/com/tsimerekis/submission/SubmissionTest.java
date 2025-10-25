@@ -1,7 +1,7 @@
-package com.tsimerekis.taskmanagement;
+package com.tsimerekis.submission;
 
-import com.tsimerekis.submission.PollutionReport;
-import com.tsimerekis.submission.SubmissionRepository;
+import com.tsimerekis.submission.entity.PollutionReport;
+import com.tsimerekis.submission.entity.SubmissionRepository;
 import org.junit.jupiter.api.Test;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.GeometryFactory;
@@ -24,7 +24,8 @@ public class SubmissionTest {
     private SubmissionRepository submissionRepository;
 
     @Test
-    @Rollback(false)
+//  Depending on whether you'd like to persist
+//  @Rollback(false)
     public void pollution_report_submission() {
         final GeometryFactory geometryFactory = new GeometryFactory();
 

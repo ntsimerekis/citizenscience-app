@@ -1,4 +1,4 @@
-package com.tsimerekis.submission;
+package com.tsimerekis.submission.entity;
 
 public enum SubmissionStatus {
     DRAFT,

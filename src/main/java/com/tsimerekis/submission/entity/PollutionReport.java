@@ -1,12 +1,9 @@
-package com.tsimerekis.submission;
+package com.tsimerekis.submission.entity;
 
 import jakarta.persistence.*;
-import org.locationtech.jts.geom.Point;
-import org.hibernate.annotations.Type;
-import java.time.LocalDateTime;
 
 @Entity
-@DiscriminatorValue("POLLUTION")
+@DiscriminatorValue(SubmissionType.POLLUTION)
 public class PollutionReport extends Submission {
 
     private Float pm25;

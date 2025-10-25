@@ -1,8 +1,8 @@
 package com.tsimerekis.map;
 
-import com.tsimerekis.submission.PollutionReport;
-import com.tsimerekis.submission.SpeciesSpotting;
-import com.tsimerekis.submission.Submission;
+import com.tsimerekis.submission.entity.PollutionReport;
+import com.tsimerekis.submission.entity.SpeciesSpotting;
+import com.tsimerekis.submission.entity.Submission;
 import com.vaadin.flow.component.map.configuration.Coordinate;
 import com.vaadin.flow.component.map.configuration.feature.MarkerFeature;
 import com.vaadin.flow.component.map.configuration.style.Icon;
@@ -10,28 +10,26 @@ import com.vaadin.flow.component.map.configuration.style.Icon;
 import org.jetbrains.annotations.NotNull;
 import org.locationtech.jts.geom.Point;
 
-import java.util.Optional;
-
 public class Blip extends MarkerFeature {
 
     private static final Icon speciesIcon = new Icon(null);
     private static final Icon pollutionIcon = new Icon(null);
 
-    private final Optional<Submission> submission;
+    private final Submission submission;
 
     private Blip(Coordinate coordinate, Submission submission) {
         super(coordinate);
-        this.submission = Optional.ofNullable(submission);
+        this.submission = submission;
 
-        this.submission.ifPresent(sub -> {
-            setId(sub.getId().toString());
+        if (submission != null) {
+            setId(submission.getId().toString());
 
-            if (sub instanceof SpeciesSpotting) {
-                setIcon(speciesIcon);
-            } else if (sub instanceof PollutionReport) {
-                setIcon(pollutionIcon);
+            if (submission instanceof SpeciesSpotting) {
+//                setIcon(speciesIcon);
+            } else if (submission instanceof PollutionReport) {
+//                setIcon(pollutionIcon);
             }
-        });
+        }
     }
 
     public static Blip createBlip(double x, double y) {
@@ -50,8 +48,8 @@ public class Blip extends MarkerFeature {
     }
 
     void showSubWindow() {
-        submission.ifPresent(sub -> {
-
-        });
+        if (submission != null ) {
+            //show window here
+        }
     }
 }

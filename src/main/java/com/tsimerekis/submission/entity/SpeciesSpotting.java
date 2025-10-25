@@ -1,12 +1,10 @@
-package com.tsimerekis.submission;
+package com.tsimerekis.submission.entity;
 
+import com.tsimerekis.submission.species.Species;
 import jakarta.persistence.*;
-import org.locationtech.jts.geom.Point;
-
-import java.time.LocalDateTime;
 
 @Entity
-@DiscriminatorValue("SPECIES")
+@DiscriminatorValue(SubmissionType.SPECIES)
 public class SpeciesSpotting extends Submission {
 
     @OneToOne(optional = true)
