@@ -75,7 +75,14 @@ class AveragingReportTest {
 
     @Test
     void getAveragePM25FromNull() {
+        AveragingReport averagingReport = sampleAveragingReport();
+        PollutionReport pollutionReport1 = new PollutionReport();
+        PollutionReport pollutionReport2 = new PollutionReport();
 
+        averagingReport.addReport(pollutionReport1);
+        averagingReport.addReport(pollutionReport2);
+
+        assertEquals(0.0f, averagingReport.getAveragePM25());
     }
 
     @Test
@@ -94,7 +101,14 @@ class AveragingReportTest {
 
     @Test
     void getAverageTemperatureFromNull() {
+        AveragingReport averagingReport = sampleAveragingReport();
+        PollutionReport pollutionReport1 = new PollutionReport();
+        PollutionReport pollutionReport2 = new PollutionReport();
 
+        averagingReport.addReport(pollutionReport1);
+        averagingReport.addReport(pollutionReport2);
+
+        assertEquals(0.0f, averagingReport.getAverageTemperature());
     }
 
     @Test
