@@ -18,5 +18,4 @@ public class SpeciesSpotting extends Submission {
     public void setSpecies(Species species) {
         this.species = species;
     }
-
 }

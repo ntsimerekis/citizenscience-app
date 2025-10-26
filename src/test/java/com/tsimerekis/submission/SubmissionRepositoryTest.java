@@ -4,11 +4,8 @@ import com.tsimerekis.submission.entity.PollutionReport;
 import com.tsimerekis.submission.entity.Submission;
 import com.tsimerekis.submission.entity.SubmissionRepository;
 import org.junit.jupiter.api.Test;
-import org.locationtech.jts.geom.Coordinate;
-import org.locationtech.jts.geom.Polygon;
+import org.locationtech.jts.geom.*;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.locationtech.jts.geom.Geometry;
-import org.locationtech.jts.geom.GeometryFactory;
 import org.springframework.boot.test.context.SpringBootTest;
 import com.tsimerekis.Helper;
 
@@ -24,6 +21,25 @@ class SubmissionRepositoryTest {
 
     @Autowired
     SubmissionRepository submissionRepository;
+
+    @Test
+    public void pollution_report_submission() {
+        final GeometryFactory geometryFactory = new GeometryFactory();
+
+        PollutionReport report = new PollutionReport();
+        report.setPM10(5.0F);
+        report.setPM25(10.0F);
+        report.setObservedAt(LocalDateTime.now());
+        final Point point = geometryFactory.createPoint(new Coordinate(-122.4194, 37.7749));
+        report.setLocation(point);
+
+        PollutionReport saved = submissionRepository.save(report);
+
+        assertNotNull(saved);
+        assertTrue(submissionRepository.existsById(saved.getSubmissionId().get()));
+
+        submissionRepository.findAll().forEach(System.out::println);
+    }
 
     @Test
     void saveSpeciesReport() {
@@ -82,15 +98,15 @@ class SubmissionRepositoryTest {
     private void buildInsideBoxReport(PollutionReport reportInsideBox) {
         reportInsideBox.setObservedAt(LocalDateTime.of(2024, 10, 10, 12, 0));
         reportInsideBox.setLocation(Helper.point(-122.42, 37.77)); // San Francisco
-        reportInsideBox.setPm25(12.5f);
-        reportInsideBox.setPm10(25.0f);
+        reportInsideBox.setPM25(12.5f);
+        reportInsideBox.setPM10(25.0f);
     }
 
     private void buildOutsideBoxReport(PollutionReport reportOutsideBox) {
         reportOutsideBox.setObservedAt(LocalDateTime.of(2024, 10, 10, 13, 0));
         reportOutsideBox.setLocation(Helper.point(0, 0)); // Africa
-        reportOutsideBox.setPm25(5.0f);
-        reportOutsideBox.setPm10(10.0f);
+        reportOutsideBox.setPM25(5.0f);
+        reportOutsideBox.setPM10(10.0f);
     }
 
     @Test
@@ -99,24 +115,24 @@ class SubmissionRepositoryTest {
         PollutionReport inRange = new PollutionReport();
         inRange.setObservedAt(LocalDateTime.of(2024, 10, 10, 12, 0));
         inRange.setLocation(Helper.point(-122.42, 37.77)); // San Francisco
-        inRange.setPm25(12.5f);
-        inRange.setPm10(25.0f);
+        inRange.setPM25(12.5f);
+        inRange.setPM10(25.0f);
         submissionRepository.save(inRange);
 
         // Insert outside bbox
         PollutionReport outOfBox = new PollutionReport();
         outOfBox.setObservedAt(LocalDateTime.of(2024, 10, 10, 13, 0));
         outOfBox.setLocation(Helper.point(0, 0)); // Africa
-        outOfBox.setPm25(5.0f);
-        outOfBox.setPm10(10.0f);
+        outOfBox.setPM25(5.0f);
+        outOfBox.setPM10(10.0f);
         submissionRepository.save(outOfBox);
 
         // Insert outside date range
         PollutionReport outOfDate = new PollutionReport();
         outOfDate.setObservedAt(LocalDateTime.of(2023, 1, 1, 12, 0));
         outOfDate.setLocation(Helper.point(-122.42, 37.77));
-        outOfDate.setPm25(5.0f);
-        outOfDate.setPm10(10.0f);
+        outOfDate.setPM25(5.0f);
+        outOfDate.setPM10(10.0f);
         submissionRepository.save(outOfDate);
 
         // Define filter criteria

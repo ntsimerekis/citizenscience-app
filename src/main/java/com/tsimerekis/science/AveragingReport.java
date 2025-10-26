@@ -40,31 +40,15 @@ public class AveragingReport {
         return averagePM10;
     }
 
-    public void setAveragePM10(Float averagePM10) {
-        this.averagePM10 = averagePM10;
-    }
-
     public Float getAveragePM25() {
         return averagePM25;
-    }
-
-    public void setAveragePM25(Float averagePM25) {
-        this.averagePM25 = averagePM25;
     }
 
     public Float getAverageTemperature() {
         return averageTemperature;
     }
 
-    public void setAverageTemperature(Float averageTemperature) {
-        this.averageTemperature = averageTemperature;
-    }
-
     public Float getAverageAltitude() {
         return averageAltitude;
-    }
-
-    public void setAverageAltitude(Float averageAltitude) {
-        this.averageAltitude = averageAltitude;
     }
 }

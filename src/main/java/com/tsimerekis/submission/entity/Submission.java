@@ -29,6 +29,10 @@ public class Submission {
 
     private String note;
 
+    private Float temperatureCelsius;    // °C
+
+    private Float altitudeMeters;       // meters
+
     @ElementCollection
     @CollectionTable(name = "submission_comments")
     private List<String> comments = new ArrayList<String>();
@@ -55,4 +59,10 @@ public class Submission {
 
     public LocalDateTime getCreatedAt() { return createdAt; }
     public void setCreatedAt(LocalDateTime createdAt) { this.createdAt = createdAt; }
+
+    public Float getTemperatureCelsius() { return temperatureCelsius; }
+    public void setTemperatureCelsius(Float temperature) { this.temperatureCelsius = temperature; }
+
+    public Float getAltitudeMeters() { return altitudeMeters; }
+    public void setAltitudeMeters(Float altitude) { this.altitudeMeters = altitude; }
 }

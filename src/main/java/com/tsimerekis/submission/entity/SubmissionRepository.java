@@ -21,9 +21,6 @@ public interface SubmissionRepository extends JpaRepository<Submission, Long>, J
   """)
     List<Submission> findAllInRangeAndBbox(Instant start, Instant end, Geometry bbox);
 
-
-    List<Submission> findAllByFilterCriteria(FilterCriteria criteria);
-
     //
 //    // subclass-specific queries using the subclass entity in JPQL:
 //    @Query("select sp from SpeciesSpotting sp where sp.species.id = :taxonId")

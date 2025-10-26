@@ -12,15 +12,11 @@ class SpeciesRepositoryTest {
     SpeciesRepository speciesRepository;
 
     @Test
-    void getSpecies() {
-
-    }
-
-    @Test
     void addSpecies() {
         final Species species = new Species();
+        species.setSpeciesName("homo sapien");
 
-        Species species_saved= speciesRepository.save(species);
+        Species species_saved = speciesRepository.save(species);
 
         assertNotNull(species_saved);
     }
