@@ -1,0 +1,190 @@
+@startuml
+
+'ENTITY
+class Submission {
+    - id: long
+    - submissionStatus: SubmissionStatus
+    - location: Point
+    - note: String
+    - createdAt: LocalDateTime
+    - observedAt: LocalDateTime
+    - temperatureCelsius: Double
+    - altitudeMeters: Double
+
+    + getSubmissionId(): String
+    + getStatus(): SubmissionStatus
+    + setStatus(): SubmissionStatus
+
+    + getCreatedAt(): LocalDateTime
+    + setCreatedAt(): LocalDateTime
+
+    + getTemperatureCelsius(): Double
+    + setTemperatureCelsius(): Double
+
+    + getAltitudeMeters(): Double
+    + setAltitudeMeters(): Double
+}
+
+class SpeciesSpotting {
+    - photoUrl: String
+    + isValid(): boolean
+
+    + getSpecies(): Species
+    + setSpecies(): Species
+}
+
+class Species {
+    - scientificName: String
+    - category: String
+}
+
+class PollutionReport {
+    - sensorType: String
+    - pm25: Double
+    - pm10: Double
+    - durationHours: Double
+
+    + getSensorType(): String
+    + setSensorType(String)
+
+    + getPM25(): Double
+    + setPM25(Double)
+
+    + getPM10(): Double
+    + setPM10(Double)
+
+    + getDurationHours()
+    + setDurationHours(Double)
+}
+
+class User {
+    - userId: long
+    - username: String
+    - fullName: String
+    - email: String
+    - profilePictureURL: String
+    - biography: String
+    - role: UserRole
+
+    + register(username: String, email: String, password: String)
+    + login(password: String): boolean
+    + updateProfile(displayName: String, bio: String, profilePictureUrl: String)
+    + changePassword(oldPassword: String, newPassword: String): boolean
+    + deactivateAccount()
+}
+
+enum UserRole {
+    CITIZEN
+    ADMIN
+    MODERATOR
+}
+
+'UI
+class SubmissionUIForm {
+    + display()
+    + collectInput()
+    + validate()
+    + submit()
+}
+
+class SubmissionPopUpWindow {
+    + displaySummary()
+    + expandDetails()
+}
+
+class FilterUIComponent {
+    + openFilterPanel()
+    + collectCriteria(): FilterCriteria
+    + clearFilters()
+}
+
+class ProfileUI {
+    + showProfile(user: User)
+    + editProfile(user: User)
+}
+
+'MAP
+class MapController {
+    - loadBlips(fullMapArea: Geometry)
+    - handleBlipClick(blip: Blip)
+    + applyFilters(criteria: FilterCriteria)
+}
+note right
+Map Controller handles input from external MapUI API
+end note
+
+ExternalMapUI --> MapController
+
+class MarkerFeature {
+}
+note right: This as a Vaadin SDK Class
+
+class Blip {
+    - color: Color
+    - isClicked: boolean
+    - isExpanded: boolean
+    + display()
+    + hide()
+    + showPopupWindow()
+    + createBlip(submission: Submission)
+}
+
+MarkerFeature <|-- Blip
+
+enum Color {
+    Red
+    Blue
+}
+
+class FilterCriteria {
+    + startDate: LocalDateTime
+    + endDate: LocalDateTime
+    + submissionType: SubmissionType
+    + speciesName: String
+    + minPM25: float
+    + maxPM25: float
+    + minPM10: float
+    + maxPM10: float
+}
+
+' REPOSITORY
+interface JpaRepository {
+    + save(Object)
+    + findAll(Example<S>)
+}
+note right
+    This interface is provided by Spring.
+    It contains many methods.
+    I only include methods here that I'm using
+end note
+
+interface SubmissionRepository {
+    + saveSubmission(submission: Submission)
+    + findAllWithinArea(area: Geometry): List<Submission>
+    + findByUser(user: User): List<Submission>
+    + filterSubmissions(criteria: FilterCriteria): List<Submission>
+}
+
+interface SpeciesRepository {
+    + fuzzySearchSpeciesName(String): List<Species>
+    + existsBySpeciesName(String): boolean
+}
+SubmissionRepository --|> JpaRepository
+SpeciesRepository --|> JpaRepository
+
+SpeciesRepository "1" o-- "0..*" Species : persists >
+' END REPOSITORY
+
+Submission <|-- SpeciesSpotting
+Submission <|-- PollutionReport
+SubmissionUIForm "1" --> "1" Submission: creates >
+SpeciesSpotting "1" o-> "1" Species: is >
+Blip "1" *-- "1" Submission : represents >
+Blip "1" *-- "1" SubmissionPopUpWindow : spawns >
+MapController *-- Blip
+FilterUIComponent "1" --> "1" MapController : advises >
+FilterUIComponent "1" --> "0..*" FilterCriteria: generates >
+SubmissionRepository "1" o-- "0..*" Submission : persists >
+ProfileUI "1" --> "1" User : handles >
+User "1" --> "0..*" Submission : owns >
+@enduml
