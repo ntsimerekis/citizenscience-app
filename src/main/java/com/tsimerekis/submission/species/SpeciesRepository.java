@@ -16,4 +16,5 @@ public interface SpeciesRepository extends JpaRepository<Species, Long> {
         """, nativeQuery = true)
     List<Species> fuzzySearchSpeciesName(String speciesname);
 
+    boolean existsBySpeciesName(String speciesname);
 }

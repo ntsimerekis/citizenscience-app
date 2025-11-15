@@ -32,10 +32,12 @@ class ScienceServiceTest {
 
         AveragingReport report = scienceService.getAveragingReport(emptySubmission);
 
-        assertEquals(0, report.getAveragePM10());
-        assertEquals(0, report.getAveragePM25());
-        assertEquals(0, report.getAverageAltitude());
-        assertEquals(0, report.getAverageTemperature());
+
+        //I feel like this is an OK exception to the one assert rule
+        assertEquals(0, Double.valueOf(report.getAveragePM10()));
+        assertEquals(0, Double.valueOf(report.getAveragePM25()));
+        assertEquals(0, Double.valueOf(report.getAverageAltitude()));
+        assertEquals(0, Double.valueOf(report.getAverageTemperature()));
         assertFalse(report.speciesSubmissionPresent());
         assertFalse(report.pollutionReportPresent());
     }

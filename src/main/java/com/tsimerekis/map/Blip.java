@@ -3,6 +3,7 @@ package com.tsimerekis.map;
 import com.tsimerekis.submission.entity.PollutionReport;
 import com.tsimerekis.submission.entity.SpeciesSpotting;
 import com.tsimerekis.submission.entity.Submission;
+import com.vaadin.flow.component.icon.IconFactory;
 import com.vaadin.flow.component.map.configuration.Coordinate;
 import com.vaadin.flow.component.map.configuration.feature.MarkerFeature;
 import com.vaadin.flow.component.map.configuration.style.Icon;
@@ -12,22 +13,19 @@ import org.locationtech.jts.geom.Point;
 
 public class Blip extends MarkerFeature {
 
-    private static final Icon speciesIcon = new Icon(null);
-    private static final Icon pollutionIcon = new Icon(null);
-
-    private final Submission submission;
+    private static final Icon speciesIcon = MarkerFeature.PIN_ICON;
+    private static final Icon pollutionIcon = MarkerFeature.PIN_ICON;
 
     private Blip(Coordinate coordinate, Submission submission) {
         super(coordinate);
-        this.submission = submission;
 
         if (submission != null) {
             setId(submission.getId().toString());
 
             if (submission instanceof SpeciesSpotting) {
-//                setIcon(speciesIcon);
+                setIcon(speciesIcon);
             } else if (submission instanceof PollutionReport) {
-//                setIcon(pollutionIcon);
+                setIcon(pollutionIcon);
             }
         }
     }
@@ -45,11 +43,5 @@ public class Blip extends MarkerFeature {
         final Coordinate coordinate = new Coordinate(jtsPoint.getX(), jtsPoint.getY());
 
         return new Blip(coordinate, submission);
-    }
-
-    void showSubWindow() {
-        if (submission != null ) {
-            //show window here
-        }
     }
 }

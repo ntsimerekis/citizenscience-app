@@ -1,5 +1,7 @@
 package com.tsimerekis.science;
 
+import com.tsimerekis.submission.entity.PollutionReport;
+import com.tsimerekis.submission.entity.SpeciesSpotting;
 import com.tsimerekis.submission.entity.Submission;
 
 import java.util.ArrayList;
@@ -12,20 +14,28 @@ public class AveragingReport {
 
     private boolean pollutionReportPresent;
 
-    private Float averagePM10;
+    private Double averagePM10;
 
-    private Float averagePM25;
+    private Double averagePM25;
 
-    private Float averageTemperature;
+    private Double averageTemperature;
 
-    private Float averageAltitude;
+    private Double averageAltitude;
 
     public List<Submission> getOrderedSubmissions() {
         return new ArrayList<Submission>(orderedSubmissions);
     }
 
     public void addReport(Submission submission) {
-        orderedSubmissions.add(submission);
+
+    }
+
+    public void addReport(SpeciesSpotting spotting) {
+
+    }
+
+    public void addReport(PollutionReport pollutionReport) {
+
     }
 
     public boolean speciesSubmissionPresent() {
@@ -36,19 +46,19 @@ public class AveragingReport {
         return pollutionReportPresent;
     }
 
-    public Float getAveragePM10() {
+    public Double getAveragePM10() {
         return averagePM10;
     }
 
-    public Float getAveragePM25() {
+    public Double getAveragePM25() {
         return averagePM25;
     }
 
-    public Float getAverageTemperature() {
+    public Double getAverageTemperature() {
         return averageTemperature;
     }
 
-    public Float getAverageAltitude() {
+    public Double getAverageAltitude() {
         return averageAltitude;
     }
 }

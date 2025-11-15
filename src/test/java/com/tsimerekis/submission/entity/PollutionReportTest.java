@@ -1,19 +1,19 @@
 package com.tsimerekis.submission.entity;
 
-import com.tsimerekis.Helper;
+import com.tsimerekis.TestHelper;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 class PollutionReportTest {
 
-    private static final Float PM10 = 3.0f;
-    private static final Float PM25 = 4.0f;
-    private static final Float HOURS = 1.0f;
+    private static final Double PM10 = 3.0;
+    private static final Double PM25 = 4.0;
+    private static final Double HOURS = 1.0;
 
     private PollutionReport minimumReport() {
         final PollutionReport report = new PollutionReport();
-        report.setLocation(Helper.samplePoint());
+        report.setLocation(TestHelper.samplePoint());
         report.setPM10(PM10);
         report.setPM25(PM25);
         report.setDurationHours(HOURS);

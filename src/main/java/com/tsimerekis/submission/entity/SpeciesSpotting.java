@@ -7,7 +7,7 @@ import jakarta.persistence.*;
 @DiscriminatorValue(SubmissionType.SPECIES)
 public class SpeciesSpotting extends Submission {
 
-    @OneToOne(optional = true)
+    @ManyToOne(optional = true)
     @JoinColumn(name = "species_species_id")
     private Species species;
 

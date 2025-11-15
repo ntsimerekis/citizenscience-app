@@ -12,10 +12,10 @@ class Submission {
 
 class SpeciesSpotting {
     - species: Species
-    - temperature: float
-    - altitude: float
+    - temperatureCelsius: float
+    - altitudeMeters: float
     - photoUrl: String
-    + validate(): boolean
+    + isValid(): boolean
 }
 
 class Species {
@@ -29,8 +29,7 @@ class PollutionReport {
     - user: User
     - pm25: float
     - pm10: float
-    - duration: float
-    + averagePM(): Float
+    - durationHours: float
 }
 
 class SubmissionUIForm {
@@ -133,12 +132,36 @@ class SubmissionRepository {
 }
 
 class SubmissionService {
-
+    + List<Submission> findAllByCriteria(FilterCriteria criteria)
+    + Specification<Submission> byCriteria(FilterCriteria c)
 }
 
 class SpeciesRepository {
     + saveSpecies(species: Species)
-    + ngramSearchSpeciesName(scienctificName: String)
+    + ngramSearchSpeciesName(scienctificName: String)Sp
+}
+
+class ScienceService {
+    + AveragingReport getAveragingReport(List<Submission> submissionList)
+}
+
+class AveragingReport {
+    - List<Submission> orederedSubmissions
+    - boolean speciesSubmissionPresent
+    - boolean pollutionReportPresent
+    - Float averagePM10
+    - Float averagePM25
+    - Float averageTemperature
+    - Float averageAltitude
+
+    + List<Submission> getOrderedSubmissions()
+    + addReport(Submission submission)
+    + speciesSubmissionPresent()
+    + pollutionReportPresent()
+    + getAveragePM10()
+    + getAveragePM25()
+    + getAverageTemperature()
+    + getAverageAltitude()
 
 }
 
