@@ -10,15 +10,12 @@ public class FilterCriteria {
 
     public SubmissionType submissionType;
 
-    public Float minPM25;
-    public Float maxPM25;
+    public Double minPM25;
+    public Double maxPM25;
 
-    public Float minPM10;
-    public Float maxPM10;
+    public Double minPM10;
+    public Double maxPM10;
 
-//    public Float minPressure;
-//    public Float maxPressure;
-
-    public Float minTemperature;
-    public Float maxTemperature;
+    public Double minTemperature;
+    public Double maxTemperature;
 }

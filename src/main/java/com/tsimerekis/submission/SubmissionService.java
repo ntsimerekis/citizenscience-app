@@ -1,6 +1,5 @@
 package com.tsimerekis.submission;
 
-import com.tsimerekis.submission.entity.PollutionReport;
 import com.tsimerekis.submission.entity.SpeciesSpotting;
 import com.tsimerekis.submission.entity.Submission;
 import com.tsimerekis.submission.entity.SubmissionRepository;
@@ -18,7 +17,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.MissingFormatArgumentException;
 import java.util.Optional;
 
 @Service
@@ -31,7 +29,7 @@ public class SubmissionService {
     private SpeciesRepository speciesRepository;
 
     public List<Submission> findWithinGeometry(Geometry geometry) {
-        return submissionRepository.finAllInBbox(geometry);
+        return submissionRepository.findAllInBbox(geometry);
     }
 
     public Optional<Submission> findById(Long id) {

@@ -3,7 +3,6 @@ package com.tsimerekis.map;
 import com.tsimerekis.submission.entity.PollutionReport;
 import com.tsimerekis.submission.entity.SpeciesSpotting;
 import com.tsimerekis.submission.entity.Submission;
-import com.vaadin.flow.component.icon.IconFactory;
 import com.vaadin.flow.component.map.configuration.Coordinate;
 import com.vaadin.flow.component.map.configuration.feature.MarkerFeature;
 import com.vaadin.flow.component.map.configuration.style.Icon;

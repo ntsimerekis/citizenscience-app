@@ -1,6 +1,5 @@
 package com.tsimerekis.submission.entity;
 
-import com.tsimerekis.submission.FilterCriteria;
 import org.locationtech.jts.geom.Geometry;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
@@ -25,7 +24,7 @@ public interface SubmissionRepository extends JpaRepository<Submission, Long>, J
     select s from Submission s
     where st_intersects(s.location, :bbox) = true
     """)
-    List<Submission> finAllInBbox(Geometry bbox);
+    List<Submission> findAllInBbox(Geometry bbox);
 
     //
 //    // subclass-specific queries using the subclass entity in JPQL:

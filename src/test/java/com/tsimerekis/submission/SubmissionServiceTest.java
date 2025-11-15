@@ -24,8 +24,8 @@ class SubmissionServiceTest {
     @Test
     void findAllByCriteria() {
         FilterCriteria criteria = new FilterCriteria();
-        criteria.maxTemperature = 50f;
-        criteria.minTemperature = 10f;
+        criteria.maxTemperature = 50.0;
+        criteria.minTemperature = 10.0;
 
         List<Submission> results = submissionService.findAllByCriteria(criteria);
         assertEquals(1, results.size());
