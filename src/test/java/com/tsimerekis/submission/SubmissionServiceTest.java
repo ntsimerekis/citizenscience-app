@@ -20,4 +20,14 @@ class SubmissionServiceTest {
 
         assertEquals(0, results.size());
     }
+
+    @Test
+    void findAllByCriteria() {
+        FilterCriteria criteria = new FilterCriteria();
+        criteria.maxTemperature = 50f;
+        criteria.minTemperature = 10f;
+
+        List<Submission> results = submissionService.findAllByCriteria(criteria);
+        assertEquals(1, results.size());
+    }
 }

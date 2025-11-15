@@ -4,7 +4,7 @@ import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.GeometryFactory;
 import org.locationtech.jts.geom.Point;
 
-public class Helper {
+public class TestHelper {
 
     public static final GeometryFactory geometryFactory = new GeometryFactory();
 

@@ -10,7 +10,8 @@ import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class UserEntity implements UserDetails {
+//public class UserEntity implements UserDetails {
+public class UserEntity {
     private static final String AUTHORITIES_DELIMITER = "::";
 
     @Id
@@ -23,7 +24,7 @@ public class UserEntity implements UserDetails {
 
     private String authorities;
 
-    @Override
+//    @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return Arrays.stream(this.authorities.split(AUTHORITIES_DELIMITER))
                 .map(SimpleGrantedAuthority::new)
@@ -31,33 +32,33 @@ public class UserEntity implements UserDetails {
 
     }
 
-    @Override
+//    @Override
     public String getPassword() {
         return password;
     }
 
-    @Override
+//    @Override
     public String getUsername() {
         return username;
     }
 
-    @Override
-    public boolean isAccountNonExpired() {
-        return UserDetails.super.isAccountNonExpired();
-    }
+//    @Override
+//    public boolean isAccountNonExpired() {
+//        return UserDetails.super.isAccountNonExpired();
+//    }
 
-    @Override
-    public boolean isAccountNonLocked() {
-        return UserDetails.super.isAccountNonLocked();
-    }
+//    @Override
+//    public boolean isAccountNonLocked() {
+//        return UserDetails.super.isAccountNonLocked();
+//    }
 
-    @Override
+//    @Override
     public boolean isCredentialsNonExpired() {
 //        return UserDetails.super.isCredentialsNonExpired();
         return true;
     }
 
-    @Override
+//    @Override
     public boolean isEnabled() {
 //        return UserDetails.super.isEnabled();
         return true;

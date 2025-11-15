@@ -19,7 +19,7 @@ public class SubmissionTest {
     @Test
     void temperatureCelsius() {
         final Submission submission = new Submission();
-        submission.setTemperatureCelsius(3.0f);
+        submission.setTemperatureCelsius(3.0);
 
         assertEquals(3.0f, submission.getTemperatureCelsius());
     }
@@ -27,8 +27,8 @@ public class SubmissionTest {
     @Test
     void altitudeMeters() {
         final Submission submission = new Submission();
-        submission.setAltitudeMeters(3.0f);
+        submission.setAltitudeMeters(3.0);
 
-        assertEquals(3.0f, submission.getAltitudeMeters());
+        assertEquals(3.0, submission.getAltitudeMeters());
     }
 }

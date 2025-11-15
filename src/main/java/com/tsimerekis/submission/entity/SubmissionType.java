@@ -1,6 +1,6 @@
 package com.tsimerekis.submission.entity;
 
 public interface SubmissionType {
-    public final String SPECIES = "species";
-    public final String POLLUTION = "pollution";
+    public final String SPECIES = "SPECIES";
+    public final String POLLUTION = "POLLUTION";
 }

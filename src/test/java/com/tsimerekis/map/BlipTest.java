@@ -1,6 +1,6 @@
 package com.tsimerekis.map;
 
-import com.tsimerekis.Helper;
+import com.tsimerekis.TestHelper;
 import com.tsimerekis.submission.entity.Submission;
 import com.vaadin.flow.component.map.configuration.Coordinate;
 import org.junit.jupiter.api.Test;
@@ -43,7 +43,7 @@ class BlipTest {
 
     private Blip createSampleBlipFromSubmission() {
         final Submission submission = new Submission();
-        submission.setLocation(Helper.point(1.5,-1.5));
+        submission.setLocation(TestHelper.point(1.5,-1.5));
 
         return Blip.createBlip(submission);
     }

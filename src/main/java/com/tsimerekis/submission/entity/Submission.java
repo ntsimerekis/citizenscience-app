@@ -29,13 +29,21 @@ public class Submission {
 
     private String note;
 
-    private Float temperatureCelsius;    // °C
+    private Double temperatureCelsius;    // °C
 
-    private Float altitudeMeters;       // meters
+    private Double altitudeMeters;       // meters
 
     @ElementCollection
     @CollectionTable(name = "submission_comments")
     private List<String> comments = new ArrayList<String>();
+
+    public String getNote() {
+        return note;
+    }
+
+    public void setNote(String note) {
+        this.note = note;
+    }
 
     public Long getId() {
         return id;
@@ -48,8 +56,12 @@ public class Submission {
 
     public void setLocation(Point location) { this.location = location; }
 
+//    public boolean isValid() {
+//        return location != null && observedAt != null;
+//    }
+
     public boolean isValid() {
-        return location != null && observedAt != null;
+            return true;
     }
 
     public Optional<Long> getSubmissionId() { return Optional.of(id); }
@@ -60,9 +72,9 @@ public class Submission {
     public LocalDateTime getCreatedAt() { return createdAt; }
     public void setCreatedAt(LocalDateTime createdAt) { this.createdAt = createdAt; }
 
-    public Float getTemperatureCelsius() { return temperatureCelsius; }
-    public void setTemperatureCelsius(Float temperature) { this.temperatureCelsius = temperature; }
+    public Double getTemperatureCelsius() { return temperatureCelsius; }
+    public void setTemperatureCelsius(Double temperature) { this.temperatureCelsius = temperature; }
 
-    public Float getAltitudeMeters() { return altitudeMeters; }
-    public void setAltitudeMeters(Float altitude) { this.altitudeMeters = altitude; }
+    public Double getAltitudeMeters() { return altitudeMeters; }
+    public void setAltitudeMeters(Double altitude) { this.altitudeMeters = altitude; }
 }

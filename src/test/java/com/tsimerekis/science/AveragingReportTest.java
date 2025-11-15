@@ -37,14 +37,14 @@ class AveragingReportTest {
     void getAveragePM10() {
         AveragingReport averagingReport = sampleAveragingReport();
         PollutionReport pollutionReport1 = new PollutionReport();
-        pollutionReport1.setPM10(5.0f);
+        pollutionReport1.setPM10(5.0);
         PollutionReport pollutionReport2 = new PollutionReport();
-        pollutionReport2.setPM10(5.0f);
+        pollutionReport2.setPM10(5.0);
 
         averagingReport.addReport(pollutionReport1);
         averagingReport.addReport(pollutionReport2);
 
-        assertEquals(5.0f, averagingReport.getAveragePM10());
+        assertEquals(5.0, averagingReport.getAveragePM10());
     }
 
     @Test
@@ -56,21 +56,21 @@ class AveragingReportTest {
         averagingReport.addReport(pollutionReport1);
         averagingReport.addReport(pollutionReport2);
 
-        assertEquals(0.0f, averagingReport.getAveragePM10());
+        assertEquals(0.0, averagingReport.getAveragePM10());
     }
 
     @Test
     void getAveragePM25() {
         AveragingReport averagingReport = sampleAveragingReport();
         PollutionReport pollutionReport1 = new PollutionReport();
-        pollutionReport1.setPM25(5.0f);
+        pollutionReport1.setPM25(5.0);
         PollutionReport pollutionReport2 = new PollutionReport();
-        pollutionReport2.setPM25(5.0f);
+        pollutionReport2.setPM25(5.0);
 
         averagingReport.addReport(pollutionReport1);
         averagingReport.addReport(pollutionReport2);
 
-        assertEquals(5.0f, averagingReport.getAveragePM25());
+        assertEquals(5.0, Double.valueOf(averagingReport.getAveragePM25()));
     }
 
     @Test
@@ -82,21 +82,21 @@ class AveragingReportTest {
         averagingReport.addReport(pollutionReport1);
         averagingReport.addReport(pollutionReport2);
 
-        assertEquals(0.0f, averagingReport.getAveragePM25());
+        assertEquals(0.0, Double.valueOf(averagingReport.getAveragePM25()));
     }
 
     @Test
     void getAverageTemperature() {
         AveragingReport averagingReport = sampleAveragingReport();
         PollutionReport pollutionReport1 = new PollutionReport();
-        pollutionReport1.setTemperatureCelsius(5.0f);
+        pollutionReport1.setTemperatureCelsius(5.0);
         PollutionReport pollutionReport2 = new PollutionReport();
-        pollutionReport2.setTemperatureCelsius(5.0f);
+        pollutionReport2.setTemperatureCelsius(5.0);
 
         averagingReport.addReport(pollutionReport1);
         averagingReport.addReport(pollutionReport2);
 
-        assertEquals(5.0f, averagingReport.getAverageTemperature());
+        assertEquals(5.0, Double.valueOf(averagingReport.getAverageTemperature()));
     }
 
     @Test
@@ -108,21 +108,21 @@ class AveragingReportTest {
         averagingReport.addReport(pollutionReport1);
         averagingReport.addReport(pollutionReport2);
 
-        assertEquals(0.0f, averagingReport.getAverageTemperature());
+        assertEquals(0.0, Double.valueOf(averagingReport.getAverageTemperature()));
     }
 
     @Test
     void getAverageAltitude() {
         AveragingReport averagingReport = sampleAveragingReport();
         PollutionReport pollutionReport1 = new PollutionReport();
-        pollutionReport1.setAltitudeMeters(5.0f);
+        pollutionReport1.setAltitudeMeters(5.0);
         PollutionReport pollutionReport2 = new PollutionReport();
-        pollutionReport2.setAltitudeMeters(5.0f);
+        pollutionReport2.setAltitudeMeters(5.0);
 
         averagingReport.addReport(pollutionReport1);
         averagingReport.addReport(pollutionReport2);
 
-        assertEquals(5.0f, averagingReport.getAverageAltitude());
+        assertEquals(5.0, averagingReport.getAverageAltitude());
     }
 
 }

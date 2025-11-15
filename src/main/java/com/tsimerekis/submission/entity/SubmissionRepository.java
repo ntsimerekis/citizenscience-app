@@ -18,8 +18,14 @@ public interface SubmissionRepository extends JpaRepository<Submission, Long>, J
     select s from Submission s
     where s.observedAt between :start and :end
       and st_intersects(s.location, :bbox) = true
-  """)
+    """)
     List<Submission> findAllInRangeAndBbox(Instant start, Instant end, Geometry bbox);
+
+    @Query("""
+    select s from Submission s
+    where st_intersects(s.location, :bbox) = true
+    """)
+    List<Submission> finAllInBbox(Geometry bbox);
 
     //
 //    // subclass-specific queries using the subclass entity in JPQL:

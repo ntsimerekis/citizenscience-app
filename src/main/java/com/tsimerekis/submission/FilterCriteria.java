@@ -16,8 +16,8 @@ public class FilterCriteria {
     public Float minPM10;
     public Float maxPM10;
 
-    public Float minPressure;
-    public Float maxPressure;
+//    public Float minPressure;
+//    public Float maxPressure;
 
     public Float minTemperature;
     public Float maxTemperature;
