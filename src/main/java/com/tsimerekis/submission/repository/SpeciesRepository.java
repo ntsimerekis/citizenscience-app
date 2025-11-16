@@ -1,5 +1,6 @@
-package com.tsimerekis.submission.species;
+package com.tsimerekis.submission.repository;
 
+import com.tsimerekis.submission.entity.Species;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 

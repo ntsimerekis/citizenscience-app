@@ -1,9 +1,8 @@
 package com.tsimerekis.map.proxy;
 
-import com.tsimerekis.submission.SubmissionService;
+import com.tsimerekis.submission.service.SubmissionService;
 import com.tsimerekis.submission.entity.Submission;
 import com.vaadin.flow.spring.annotation.UIScope;
-import org.checkerframework.checker.guieffect.qual.UI;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 

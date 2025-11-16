@@ -1,13 +1,14 @@
-package com.tsimerekis.submission;
+package com.tsimerekis.submission.service;
 
+import com.tsimerekis.submission.repository.FilterCriteria;
 import com.tsimerekis.submission.entity.SpeciesSpotting;
 import com.tsimerekis.submission.entity.Submission;
-import com.tsimerekis.submission.entity.SubmissionRepository;
+import com.tsimerekis.submission.repository.SubmissionRepository;
 import com.tsimerekis.submission.exception.InvalidSubmissionException;
 import com.tsimerekis.submission.exception.MissingSpeciesException;
-import com.tsimerekis.submission.species.Species;
-import com.tsimerekis.submission.species.SpeciesRepository;
-import jakarta.persistence.criteria.Predicate;
+import com.tsimerekis.submission.entity.Species;
+import com.tsimerekis.submission.repository.SpeciesRepository;
+import com.tsimerekis.submission.repository.SubmissionSpecs;
 import org.locationtech.jts.geom.Geometry;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
@@ -15,18 +16,20 @@ import org.springframework.data.domain.ExampleMatcher;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 @Service
 public class SubmissionService {
 
-    @Autowired
-    private SubmissionRepository submissionRepository;
+    private final SubmissionRepository submissionRepository;
 
-    @Autowired
-    private SpeciesRepository speciesRepository;
+    private final SpeciesRepository speciesRepository;
+
+    public SubmissionService(@Autowired SubmissionRepository submissionRepository, @Autowired SpeciesRepository speciesRepository) {
+        this.submissionRepository = submissionRepository;
+        this.speciesRepository = speciesRepository;
+    }
 
     public List<Submission> findWithinGeometry(Geometry geometry) {
         return submissionRepository.findAllInBbox(geometry);
@@ -39,7 +42,18 @@ public class SubmissionService {
     }
 
     public List<Submission> findAllByCriteria(FilterCriteria criteria) {
-        return submissionRepository.findAll(byCriteria(criteria));
+        return submissionRepository.findAll(SubmissionSpecs.byFilterCriteria(criteria));
+    }
+
+    public List<Submission> findAllByCriteriaAndWithinGeometry(FilterCriteria criteria, Geometry geometry) {
+        final Specification<Submission> specification =
+            Specification.<Submission>unrestricted()
+                .and(SubmissionSpecs.byFilterCriteria(criteria))
+                .and(SubmissionSpecs.forPollutionReport(criteria))
+                .and(SubmissionSpecs.intersects(geometry));
+
+        var submissions = submissionRepository.findAll(specification);
+        return submissions;
     }
 
     public void save(Submission submission) {
@@ -76,30 +90,5 @@ public class SubmissionService {
     public List<Submission> getAll() {
         return submissionRepository.findAll();
     }
-
-    private static Specification<Submission> byCriteria(FilterCriteria c) {
-        return (root, query, cb) -> {
-            var predicates = new ArrayList<Predicate>();
-            if (c.minTemperature != null)
-                predicates.add(cb.ge(root.get("temperatureCelsius"), c.minTemperature));
-            if (c.maxTemperature != null)
-                predicates.add(cb.le(root.get("temperatureCelsius"), c.maxTemperature));
-            if (c.minTemperature != null)
-                predicates.add(cb.ge(root.get("temperatureCelsius"), c.minTemperature));
-            if (c.maxTemperature != null)
-                predicates.add(cb.le(root.get("temperatureCelsius"), c.maxTemperature));
-            if (c.minPM25 != null)
-                predicates.add(cb.ge(root.get("pm25"), c.minPM25));
-            if (c.maxPM25 != null)
-                predicates.add(cb.le(root.get("pm25"), c.maxPM25));
-            if (c.minPM10 != null)
-                predicates.add(cb.ge(root.get("pm10"), c.minPM10));
-            if (c.maxPM10 != null)
-                predicates.add(cb.le(root.get("pm10"), c.maxPM10));
-
-            return cb.and(predicates.toArray(new Predicate[0]));
-        };
-    }
-
 
 }

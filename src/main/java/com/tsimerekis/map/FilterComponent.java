@@ -1,6 +1,7 @@
 package com.tsimerekis.map;
 
-import com.tsimerekis.submission.FilterCriteria;
+import com.tsimerekis.submission.repository.FilterCriteria;
+import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.spring.annotation.UIScope;
 import org.springframework.stereotype.Component;
 
@@ -8,14 +9,11 @@ import org.springframework.stereotype.Component;
 @Component
 public class FilterComponent {
 
-    private FilterCriteria filterCriteria;
+    private final FilterCriteria filterCriteria;
 
     public FilterComponent() {
         filterCriteria = new FilterCriteria();
-    }
-
-    public void setFilterCriteria(FilterCriteria filterCriteria) {
-        this.filterCriteria = filterCriteria;
+        Notification.show("Filter criteria");
     }
 
     public FilterCriteria getFilterCriteria() {

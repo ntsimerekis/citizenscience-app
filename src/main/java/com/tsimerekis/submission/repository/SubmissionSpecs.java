@@ -1,0 +1,92 @@
+package com.tsimerekis.submission.repository;
+
+import com.tsimerekis.submission.entity.PollutionReport;
+import com.tsimerekis.submission.entity.Submission;
+import jakarta.persistence.criteria.Expression;
+import jakarta.persistence.criteria.From;
+import jakarta.persistence.criteria.Predicate;
+import org.locationtech.jts.geom.Geometry;
+import org.springframework.data.jpa.domain.Specification;
+
+import java.time.Instant;
+import java.util.ArrayList;
+
+public class SubmissionSpecs {
+
+    public static Specification<Submission> forPollutionReport(FilterCriteria c) {
+        return (root, query, cb) -> {
+            cb.treat(root, PollutionReport.class);
+
+            var predicates = new ArrayList<Predicate>();
+            Expression<Double> pm25 = root.get("pm25");
+
+            if (c.minPM25 != null && c.maxPM25 != null) {
+                // use between when both bounds are provided - still allow NULLs to pass
+                predicates.add(cb.or(cb.isNull(pm25), cb.between(pm25, c.minPM25, c.maxPM25)));
+            } else if (c.minPM25 != null) {
+                predicates.add(cb.or(cb.isNull(pm25), cb.ge(pm25, c.minPM25)));
+            } else if (c.maxPM25 != null) {
+                predicates.add(cb.or(cb.isNull(pm25), cb.le(pm25, c.maxPM25)));
+            }
+
+            Expression<Double> pm10 = root.get("pm10");
+            if (c.minPM10 != null && c.maxPM10 != null) {
+                // use between when both bounds are provided - still allow NULLs to pass
+                predicates.add(cb.or(cb.isNull(pm10), cb.between(pm10, c.minPM10, c.maxPM10)));
+            } else if (c.minPM10 != null) {
+                predicates.add(cb.or(cb.isNull(pm10), cb.ge(pm10, c.minPM10)));
+            } else if (c.maxPM10 != null) {
+                predicates.add(cb.or(cb.isNull(pm10), cb.le(pm10, c.maxPM10)));
+            }
+
+            return cb.and(predicates.toArray(new Predicate[0]));
+        };
+    }
+
+    public static Specification<Submission> byFilterCriteria(FilterCriteria c) {
+        return (root, query, cb) -> {
+            var predicates = new ArrayList<Predicate>();
+            if (c.minTemperature != null)
+                predicates.add(cb.ge(root.get("temperatureCelsius"), c.minTemperature));
+            if (c.maxTemperature != null)
+                predicates.add(cb.le(root.get("temperatureCelsius"), c.maxTemperature));
+//            if (c.minPM25 != null)
+//                predicates.add(cb.or(cb.isNull(root.get("pm25")), cb.ge(root.get("pm25"), c.minPM25)));
+//            if (c.maxPM25 != null)
+//                predicates.add(cb.or(cb.isNull(root.get("pm25")), cb.le(root.get("pm25"), c.maxPM25)));
+
+
+
+
+//            if (c.minPM10 != null)
+//                predicates.add(cb.ge(root.get("pm10"), c.minPM10));
+//            if (c.maxPM10 != null)
+//                predicates.add(cb.le(root.get("pm10"), c.maxPM10));
+
+            //Not sure why between is allowed to use Instants and not ge or le
+//            if (c.lowestObservedDate != null && c.highestObservedDate != null)
+//                predicates.add(cb.between(root.get("observedAt"), c.lowestObservedDate, c.highestObservedDate));
+
+            return cb.and(predicates.toArray(new Predicate[0]));
+        };
+    }
+
+
+
+    public static Specification<Submission> intersects(Geometry bbox) {
+        return (root, query, cb) -> {
+            // Hibernate 6 + PostGIS: call the SQL function directly
+            Expression<Boolean> fn = cb.function(
+                    "st_intersects",
+                    Boolean.class,
+                    root.get("location"),
+                    cb.literal(bbox)   // use literal so we don't need to bind a Criteria parameter
+            );
+            return cb.isTrue(fn);
+        };
+    }
+
+    public static Specification<Submission> observedBetween(Instant start, Instant end) {
+        return (root, query, cb) -> cb.between(root.get("observedAt"), start, end);
+    }
+}

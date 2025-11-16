@@ -1,6 +1,13 @@
 package com.tsimerekis.submission.entity;
 
-public interface SubmissionType {
-    public final String SPECIES = "SPECIES";
-    public final String POLLUTION = "POLLUTION";
+import java.util.Arrays;
+import java.util.Collection;
+
+public class SubmissionType {
+    public final static String SPECIES = "SPECIES";
+    public final static String POLLUTION = "POLLUTION";
+
+    public static Collection<String> getAllTypes() {
+        return Arrays.asList(SPECIES, POLLUTION);
+    }
 }

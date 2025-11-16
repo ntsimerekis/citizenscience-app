@@ -1,11 +1,10 @@
 package com.tsimerekis.submission.ui;
 
-import com.tsimerekis.submission.SubmissionService;
-import com.tsimerekis.submission.entity.PollutionReport;
+import com.tsimerekis.submission.service.SubmissionService;
 import com.tsimerekis.submission.entity.SpeciesSpotting;
 import com.tsimerekis.submission.exception.InvalidSubmissionException;
 import com.tsimerekis.submission.exception.MissingSpeciesException;
-import com.tsimerekis.submission.species.Species;
+import com.tsimerekis.submission.entity.Species;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.notification.NotificationVariant;

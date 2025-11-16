@@ -37,9 +37,9 @@ class AveragingReportTest {
     void getAveragePM10() {
         AveragingReport averagingReport = sampleAveragingReport();
         PollutionReport pollutionReport1 = new PollutionReport();
-        pollutionReport1.setPM10(5.0);
+        pollutionReport1.setPm10(5.0);
         PollutionReport pollutionReport2 = new PollutionReport();
-        pollutionReport2.setPM10(5.0);
+        pollutionReport2.setPm10(5.0);
 
         averagingReport.addReport(pollutionReport1);
         averagingReport.addReport(pollutionReport2);
@@ -63,9 +63,9 @@ class AveragingReportTest {
     void getAveragePM25() {
         AveragingReport averagingReport = sampleAveragingReport();
         PollutionReport pollutionReport1 = new PollutionReport();
-        pollutionReport1.setPM25(5.0);
+        pollutionReport1.setPm25(5.0);
         PollutionReport pollutionReport2 = new PollutionReport();
-        pollutionReport2.setPM25(5.0);
+        pollutionReport2.setPm25(5.0);
 
         averagingReport.addReport(pollutionReport1);
         averagingReport.addReport(pollutionReport2);

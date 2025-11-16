@@ -1,6 +1,5 @@
 package com.tsimerekis.submission.entity;
 
-import com.tsimerekis.submission.species.Species;
 import jakarta.persistence.*;
 
 @Entity

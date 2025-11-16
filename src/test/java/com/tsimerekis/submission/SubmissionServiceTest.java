@@ -1,6 +1,8 @@
 package com.tsimerekis.submission;
 
 import com.tsimerekis.submission.entity.Submission;
+import com.tsimerekis.submission.repository.FilterCriteria;
+import com.tsimerekis.submission.service.SubmissionService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 

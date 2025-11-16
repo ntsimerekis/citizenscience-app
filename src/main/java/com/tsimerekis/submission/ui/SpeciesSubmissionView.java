@@ -1,7 +1,7 @@
 package com.tsimerekis.submission.ui;
 
 import com.tsimerekis.submission.entity.SpeciesSpotting;
-import com.tsimerekis.submission.species.Species;
+import com.tsimerekis.submission.entity.Species;
 import com.vaadin.flow.component.HasValueAndElement;
 import com.vaadin.flow.component.datetimepicker.DateTimePicker;
 import com.vaadin.flow.component.formlayout.FormLayout;

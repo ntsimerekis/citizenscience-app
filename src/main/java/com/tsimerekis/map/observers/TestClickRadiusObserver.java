@@ -1,7 +1,7 @@
 package com.tsimerekis.map.observers;
 
 import com.tsimerekis.geometry.GeometryHelper;
-import com.tsimerekis.submission.SubmissionService;
+import com.tsimerekis.submission.service.SubmissionService;
 import com.vaadin.flow.component.map.events.MapClickEvent;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.spring.annotation.UIScope;

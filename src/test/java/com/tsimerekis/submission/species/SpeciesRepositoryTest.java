@@ -1,6 +1,9 @@
 package com.tsimerekis.submission.species;
 
 import java.util.List;
+
+import com.tsimerekis.submission.entity.Species;
+import com.tsimerekis.submission.repository.SpeciesRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;

@@ -1,4 +1,4 @@
-package com.tsimerekis.submission.species;
+package com.tsimerekis.submission.entity;
 
 import jakarta.persistence.*;
 

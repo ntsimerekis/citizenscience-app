@@ -74,10 +74,10 @@ public class PollutionReportView extends VerticalLayout {
                 .bind(PollutionReport::getObservedAt, PollutionReport::setObservedAt);
         binder.forField(pm25Field)
                 .asRequired()
-                .bind(PollutionReport::getPM25, PollutionReport::setPM25);
+                .bind(PollutionReport::getPm25, PollutionReport::setPm25);
         binder.forField(pm10Field)
                 .asRequired()
-                .bind(PollutionReport::getPM10, PollutionReport::setPM10);
+                .bind(PollutionReport::getPm10, PollutionReport::setPm10);
         binder.forField(durationField)
                 .asRequired()
                 .bind(PollutionReport::getDurationHours, PollutionReport::setDurationHours);

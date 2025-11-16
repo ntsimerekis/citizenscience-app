@@ -14,8 +14,8 @@ class PollutionReportTest {
     private PollutionReport minimumReport() {
         final PollutionReport report = new PollutionReport();
         report.setLocation(TestHelper.samplePoint());
-        report.setPM10(PM10);
-        report.setPM25(PM25);
+        report.setPm10(PM10);
+        report.setPm25(PM25);
         report.setDurationHours(HOURS);
 
         return report;
@@ -31,30 +31,30 @@ class PollutionReportTest {
     @Test
     void PM25() {
         final PollutionReport report = minimumReport();
-        assertEquals(PM25, report.getPM25());
+        assertEquals(PM25, report.getPm25());
     }
 
     @Test
     void setPM25() {
         final PollutionReport report = minimumReport();
-        report.setPM25(PM25 + 2);
+        report.setPm25(PM25 + 2);
 
-        assertEquals(PM25 + 2, report.getPM25());
+        assertEquals(PM25 + 2, report.getPm25());
     }
 
     @Test
     void getPM10() {
         final PollutionReport report = minimumReport();
 
-        assertEquals(PM10, report.getPM10());
+        assertEquals(PM10, report.getPm10());
     }
 
     @Test
     void setPM10() {
         final PollutionReport report = minimumReport();
-        report.setPM10(PM10 + 2);
+        report.setPm10(PM10 + 2);
 
-        assertEquals(PM10 + 2, report.getPM10());
+        assertEquals(PM10 + 2, report.getPm10());
     }
 
     @Test

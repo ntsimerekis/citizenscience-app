@@ -3,7 +3,7 @@ package com.tsimerekis.submission;
 import com.tsimerekis.submission.entity.PollutionReport;
 import com.tsimerekis.submission.entity.SpeciesSpotting;
 import com.tsimerekis.submission.entity.Submission;
-import com.tsimerekis.submission.entity.SubmissionRepository;
+import com.tsimerekis.submission.repository.SubmissionRepository;
 import org.junit.jupiter.api.Test;
 import org.locationtech.jts.geom.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,8 +26,8 @@ class SubmissionRepositoryTest {
     @Test
     public void pollution_report_submission() {
         PollutionReport report = new PollutionReport();
-        report.setPM10(5.0);
-        report.setPM25(10.0);
+        report.setPm10(5.0);
+        report.setPm25(10.0);
         report.setObservedAt(LocalDateTime.now());
         report.setLocation(TestHelper.point(-122.4194, 37.7749));
 
@@ -94,15 +94,15 @@ class SubmissionRepositoryTest {
     private void buildInsideBoxReport(PollutionReport reportInsideBox) {
         reportInsideBox.setObservedAt(LocalDateTime.of(2024, 10, 10, 12, 0));
         reportInsideBox.setLocation(TestHelper.point(-122.42, 37.77)); // San Francisco
-        reportInsideBox.setPM25(12.5);
-        reportInsideBox.setPM10(25.0);
+        reportInsideBox.setPm25(12.5);
+        reportInsideBox.setPm10(25.0);
     }
 
     private void buildOutsideBoxReport(PollutionReport reportOutsideBox) {
         reportOutsideBox.setObservedAt(LocalDateTime.of(2024, 10, 10, 13, 0));
         reportOutsideBox.setLocation(TestHelper.point(0, 0)); // Africa
-        reportOutsideBox.setPM25(5.0);
-        reportOutsideBox.setPM10(10.0);
+        reportOutsideBox.setPm25(5.0);
+        reportOutsideBox.setPm10(10.0);
     }
 
     @Test

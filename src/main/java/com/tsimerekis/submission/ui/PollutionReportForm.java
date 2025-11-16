@@ -1,6 +1,6 @@
 package com.tsimerekis.submission.ui;
 
-import com.tsimerekis.submission.SubmissionService;
+import com.tsimerekis.submission.service.SubmissionService;
 import com.tsimerekis.submission.entity.PollutionReport;
 import com.tsimerekis.submission.exception.InvalidSubmissionException;
 import com.vaadin.flow.component.button.Button;
