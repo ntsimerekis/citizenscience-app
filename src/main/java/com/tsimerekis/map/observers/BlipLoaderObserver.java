@@ -21,11 +21,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
 
+import java.util.HashMap;
+
 @Component
 @UIScope
 public class BlipLoaderObserver {
 
     private static final Logger log = LogManager.getLogger(BlipLoaderObserver.class);
+
+    private final java.util.Map<Long, Integer> loaded = new HashMap<>();
 
     private final SubmissionService submissionService;
 
@@ -66,6 +70,7 @@ public class BlipLoaderObserver {
 
         submissionService.findAllByCriteriaAndWithinGeometry(filterComponent.getFilterCriteria(), geometry)
                 .stream()
+                .filter(feature -> loaded.putIfAbsent(feature.getId(), 0) == null)
                 .map(Blip::createBlip)
                 .peek(blip -> Notification.show(blip.getId()))
                 .forEach(features::addFeature);

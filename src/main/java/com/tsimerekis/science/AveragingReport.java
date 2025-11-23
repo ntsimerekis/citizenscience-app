@@ -6,7 +6,6 @@ import com.tsimerekis.submission.entity.Submission;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 public class AveragingReport {
     private final List<Submission> orderedSubmissions = new ArrayList<>();
@@ -23,30 +22,33 @@ public class AveragingReport {
         return new ArrayList<>(orderedSubmissions);
     }
 
+    /** Add a single submission (any type). */
     public void addReport(Submission submission) {
         if (submission == null) return;
         orderedSubmissions.add(submission);
 
-        if (submission instanceof PollutionReport pollutionReport) {
-            addReport(pollutionReport);
-        } else if (submission instanceof SpeciesSpotting speciesSpotting) {
-            addReport(speciesSpotting);
-        } else {
-            recalculateAverages();
+        if (submission instanceof PollutionReport) {
+            pollutionReportPresent = true;
+        } else if (submission instanceof SpeciesSpotting) {
+            speciesSubmissionPresent = true;
         }
-    }
 
-    public void addReport(SpeciesSpotting spotting) {
-        if (spotting == null) return;
-        speciesSubmissionPresent = true;
-        orderedSubmissions.add(spotting);
         recalculateAverages();
     }
 
-    public void addReport(PollutionReport pollutionReport) {
-        if (pollutionReport == null) return;
-        pollutionReportPresent = true;
-        orderedSubmissions.add(pollutionReport);
+    /** Add a list of submissions at once. */
+    public void addReports(List<? extends Submission> submissions) {
+        if (submissions == null || submissions.isEmpty()) return;
+
+        for (Submission submission : submissions) {
+            if (submission instanceof PollutionReport) {
+                pollutionReportPresent = true;
+            } else if (submission instanceof SpeciesSpotting) {
+                speciesSubmissionPresent = true;
+            }
+        }
+
+        orderedSubmissions.addAll(submissions);
         recalculateAverages();
     }
 
@@ -57,6 +59,7 @@ public class AveragingReport {
         double totalAlt = 0;
 
         int pmCount = 0;
+        int pm25Count = 0;
         int tempCount = 0;
         int altCount = 0;
 
@@ -68,6 +71,7 @@ public class AveragingReport {
                 }
                 if (pr.getPm25() != null) {
                     totalPM25 += pr.getPm25();
+                    pm25Count++;
                 }
                 if (pr.getTemperatureCelsius() != null) {
                     totalTemp += pr.getTemperatureCelsius();
@@ -82,12 +86,11 @@ public class AveragingReport {
                     totalAlt += ss.getAltitudeMeters();
                     altCount++;
                 }
-                // You might later include environmental fields from species spotting too.
             }
         }
 
         averagePM10 = pmCount > 0 ? totalPM10 / pmCount : null;
-        averagePM25 = pmCount > 0 ? totalPM25 / pmCount : null;
+        averagePM25 = pm25Count > 0 ? totalPM25 / pm25Count : null;
         averageTemperature = tempCount > 0 ? totalTemp / tempCount : null;
         averageAltitude = altCount > 0 ? totalAlt / altCount : null;
     }

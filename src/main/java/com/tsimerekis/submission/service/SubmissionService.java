@@ -48,7 +48,7 @@ public class SubmissionService {
     public List<Submission> findAllByCriteriaAndWithinGeometry(FilterCriteria criteria, Geometry geometry) {
         final Specification<Submission> specification =
             Specification.<Submission>unrestricted()
-                .and(SubmissionSpecs.byFilterCriteria(criteria))
+//                .and(SubmissionSpecs.byFilterCriteria(criteria))
 //                .and(SubmissionSpecs.forPollutionReport(criteria))
                 .and(SubmissionSpecs.intersects(geometry));
 

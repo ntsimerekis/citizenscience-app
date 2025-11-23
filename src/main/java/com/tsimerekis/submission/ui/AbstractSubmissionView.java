@@ -1,5 +1,6 @@
 package com.tsimerekis.submission.ui;
 
+import com.tsimerekis.geometry.GeometryHelper;
 import com.vaadin.flow.component.HasValueAndElement;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.formlayout.FormLayout;
@@ -8,6 +9,7 @@ import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.NumberField;
 import com.vaadin.flow.data.binder.Binder;
 import org.locationtech.jts.geom.Coordinate;
+import org.locationtech.jts.geom.Point;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -84,6 +86,11 @@ public abstract class AbstractSubmissionView<T> extends VerticalLayout {
         this.components.forEach(c -> c.setReadOnly(false));
         this.binder.setReadOnly(false);
         this.coordinateBinder.setReadOnly(false);
+    }
+
+    //A little messy
+    public Point getCoordinate() {
+        return GeometryHelper.gf.createPoint(coordinateBinder.getBean());
     }
 
     // subclass responsibilities

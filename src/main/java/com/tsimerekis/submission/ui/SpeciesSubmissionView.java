@@ -27,6 +27,10 @@ public class SpeciesSubmissionView extends AbstractSubmissionView<SpeciesSpottin
         }
     }
 
+    public Species getSpecies() {
+        return speciesBinder.getBean();
+    }
+
     @Override
     protected void createFields() {
         speciesNameField = new TextField("Species"); components.add(speciesNameField);
@@ -60,4 +64,5 @@ public class SpeciesSubmissionView extends AbstractSubmissionView<SpeciesSpottin
     protected org.locationtech.jts.geom.Coordinate extractCoordinate(SpeciesSpotting bean) {
         return bean.getLocation() != null ? bean.getLocation().getCoordinate() : null;
     }
+
 }
