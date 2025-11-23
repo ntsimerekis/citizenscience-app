@@ -9,7 +9,6 @@ import com.tsimerekis.submission.entity.Submission;
 import com.tsimerekis.submission.ui.PollutionReportView;
 import com.tsimerekis.submission.ui.SpeciesSubmissionView;
 import com.vaadin.flow.component.dialog.Dialog;
-import com.vaadin.flow.component.dialog.DialogVariant;
 import com.vaadin.flow.component.map.events.MapFeatureClickEvent;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.spring.annotation.UIScope;

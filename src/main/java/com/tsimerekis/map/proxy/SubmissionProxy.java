@@ -7,18 +7,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.HashMap;
-import java.util.Map;
 import java.util.Optional;
 
 @Component
 @UIScope
 public class SubmissionProxy {
 
-    private final Integer PROXY_SIZE = 100;
-
     private final SubmissionService submissionService;
 
-    private final Map<Long, Submission> submissions = new HashMap<>();
+    private final HashMap<Long, Submission> submissions = new HashMap<>();
 
     public SubmissionProxy(@Autowired SubmissionService submissionService) {
         this.submissionService = submissionService;
@@ -34,6 +31,10 @@ public class SubmissionProxy {
 
             return retrievedSubmission;
         }
+    }
+
+    HashMap<Long, Submission> getCache() {
+        return submissions;
     }
 
 }

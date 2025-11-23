@@ -1,10 +1,8 @@
-package com.tsimerekis.submission.ui;
+package com.tsimerekis.submission.ui.old;
 
 import com.tsimerekis.submission.service.SubmissionService;
-import com.tsimerekis.submission.entity.SpeciesSpotting;
+import com.tsimerekis.submission.entity.PollutionReport;
 import com.tsimerekis.submission.exception.InvalidSubmissionException;
-import com.tsimerekis.submission.exception.MissingSpeciesException;
-import com.tsimerekis.submission.entity.Species;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.notification.NotificationVariant;
@@ -13,19 +11,24 @@ import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.GeometryFactory;
 import org.locationtech.jts.geom.PrecisionModel;
 import org.springframework.beans.factory.annotation.Autowired;
+//
+//@Route("/pollution-report")
+@Deprecated
+public class PollutionReportForm extends PollutionReportView {
 
-@Route("/species-submission")
-public class SpeciesSubmissionForm extends SpeciesSubmissionView {
-
-    private final SubmissionService submissionService;
+    private SubmissionService submissionService;
 
     private final Integer SRID = 4326;
     private final PrecisionModel pm = new PrecisionModel(PrecisionModel.FLOATING);
     private final GeometryFactory geometryFactory = new GeometryFactory(pm, SRID);
 
-    public SpeciesSubmissionForm(@Autowired SubmissionService submissionService) {
-        super(new SpeciesSpotting());
+    public PollutionReportForm(@Autowired SubmissionService submissionService) {
+        super(new PollutionReport());
         allowWrite();
+
+        setSizeFull();
+        setAlignItems(Alignment.CENTER);
+        setJustifyContentMode(JustifyContentMode.CENTER);
 
         this.submissionService = submissionService;
 
@@ -41,15 +44,11 @@ public class SpeciesSubmissionForm extends SpeciesSubmissionView {
     }
 
     private void saveReport() {
-        if (binder.validate().isOk() && speciesBinder.validate().isOk()) {
-            final SpeciesSpotting spotting = binder.getBean();
-            spotting.setLocation(geometryFactory.createPoint(coordinateBinder.getBean()));
-            spotting.setSpecies(speciesBinder.getBean());
-
+        if (binder.validate().isOk() && coordinateBinder.validate().isOk()) {
+            final PollutionReport pollutionReport = binder.getBean();
+            pollutionReport.setLocation(geometryFactory.createPoint(coordinateBinder.getBean()));
             try {
-                submissionService.save(spotting);
-            } catch (MissingSpeciesException me) {
-                Notification n = Notification.show("Species not found");
+                submissionService.save(pollutionReport);
             } catch (InvalidSubmissionException se) {
                 Notification n = Notification.show("Invalid Submission");
                 n.addThemeVariants(NotificationVariant.LUMO_ERROR);
@@ -61,8 +60,7 @@ public class SpeciesSubmissionForm extends SpeciesSubmissionView {
     }
 
     private void resetFields() {
-        binder.setBean(new SpeciesSpotting());
-        speciesBinder.setBean(new Species());
+        binder.setBean(new PollutionReport());
         coordinateBinder.setBean(new Coordinate());
     }
 }

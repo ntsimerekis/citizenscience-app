@@ -5,6 +5,7 @@ import com.tsimerekis.submission.entity.Submission;
 import jakarta.persistence.criteria.Expression;
 import jakarta.persistence.criteria.From;
 import jakarta.persistence.criteria.Predicate;
+import jakarta.persistence.criteria.Root;
 import org.locationtech.jts.geom.Geometry;
 import org.springframework.data.jpa.domain.Specification;
 
@@ -15,13 +16,18 @@ public class SubmissionSpecs {
 
     public static Specification<Submission> forPollutionReport(FilterCriteria c) {
         return (root, query, cb) -> {
-            cb.treat(root, PollutionReport.class);
+            // treat must be called on a From; cast root accordingly
+//            From<?, ?> from = (From<?, ?>) root;
+//            From<?, ?> pollutionRoot = from.treat(PollutionReport.class);
+            Root<PollutionReport> pollutionRoot = cb.treat(root, PollutionReport.class);
 
             var predicates = new ArrayList<Predicate>();
-            Expression<Double> pm25 = root.get("pm25");
 
+            // ensure the row is actually the subclass type
+            predicates.add(cb.equal(root.type(), PollutionReport.class));
+
+            Expression<Double> pm25 = pollutionRoot.get("pm25");
             if (c.minPM25 != null && c.maxPM25 != null) {
-                // use between when both bounds are provided - still allow NULLs to pass
                 predicates.add(cb.or(cb.isNull(pm25), cb.between(pm25, c.minPM25, c.maxPM25)));
             } else if (c.minPM25 != null) {
                 predicates.add(cb.or(cb.isNull(pm25), cb.ge(pm25, c.minPM25)));
@@ -29,9 +35,8 @@ public class SubmissionSpecs {
                 predicates.add(cb.or(cb.isNull(pm25), cb.le(pm25, c.maxPM25)));
             }
 
-            Expression<Double> pm10 = root.get("pm10");
+            Expression<Double> pm10 = pollutionRoot.get("pm10");
             if (c.minPM10 != null && c.maxPM10 != null) {
-                // use between when both bounds are provided - still allow NULLs to pass
                 predicates.add(cb.or(cb.isNull(pm10), cb.between(pm10, c.minPM10, c.maxPM10)));
             } else if (c.minPM10 != null) {
                 predicates.add(cb.or(cb.isNull(pm10), cb.ge(pm10, c.minPM10)));
@@ -42,7 +47,7 @@ public class SubmissionSpecs {
             return cb.and(predicates.toArray(new Predicate[0]));
         };
     }
-
+    
     public static Specification<Submission> byFilterCriteria(FilterCriteria c) {
         return (root, query, cb) -> {
             var predicates = new ArrayList<Predicate>();

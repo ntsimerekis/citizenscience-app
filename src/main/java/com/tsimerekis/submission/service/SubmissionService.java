@@ -49,7 +49,7 @@ public class SubmissionService {
         final Specification<Submission> specification =
             Specification.<Submission>unrestricted()
                 .and(SubmissionSpecs.byFilterCriteria(criteria))
-                .and(SubmissionSpecs.forPollutionReport(criteria))
+//                .and(SubmissionSpecs.forPollutionReport(criteria))
                 .and(SubmissionSpecs.intersects(geometry));
 
         var submissions = submissionRepository.findAll(specification);

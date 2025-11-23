@@ -1,5 +1,6 @@
 package com.tsimerekis.map;
 
+import com.tsimerekis.geometry.VaadinCoordinateAdapter;
 import com.tsimerekis.submission.entity.PollutionReport;
 import com.tsimerekis.submission.entity.SpeciesSpotting;
 import com.tsimerekis.submission.entity.Submission;
@@ -8,7 +9,6 @@ import com.vaadin.flow.component.map.configuration.feature.MarkerFeature;
 import com.vaadin.flow.component.map.configuration.style.Icon;
 
 import org.jetbrains.annotations.NotNull;
-import org.locationtech.jts.geom.Point;
 
 public class Blip extends MarkerFeature {
 
@@ -38,8 +38,7 @@ public class Blip extends MarkerFeature {
             throw new IllegalArgumentException("Blip id and location are required");
         }
 
-        final Point jtsPoint = submission.getLocation();
-        final Coordinate coordinate = new Coordinate(jtsPoint.getX(), jtsPoint.getY());
+        final Coordinate coordinate = new VaadinCoordinateAdapter(submission.getLocation());
 
         return new Blip(coordinate, submission);
     }
