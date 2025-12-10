@@ -14,11 +14,14 @@ import com.vaadin.flow.component.map.Map;
 import com.vaadin.flow.component.map.configuration.Coordinate;
 import com.vaadin.flow.component.map.configuration.feature.MarkerFeature;
 import com.vaadin.flow.component.map.configuration.layer.FeatureLayer;
+import jakarta.annotation.security.PermitAll;
+
 /**
  * This view shows up when a user navigates to the root ('/') of the application.
  */
 @Route
 @Menu(order = -100, icon = "vaadin:home", title = "Welcome!")
+@PermitAll
 public final class MainView extends Main {
 
     // TODO Replace with your own main view.
