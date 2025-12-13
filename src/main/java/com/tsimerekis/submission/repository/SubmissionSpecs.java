@@ -1,7 +1,9 @@
 package com.tsimerekis.submission.repository;
 
 import com.tsimerekis.submission.entity.PollutionReport;
+import com.tsimerekis.submission.entity.SpeciesSpotting;
 import com.tsimerekis.submission.entity.Submission;
+import com.tsimerekis.submission.entity.SubmissionType;
 import jakarta.persistence.criteria.Expression;
 import jakarta.persistence.criteria.From;
 import jakarta.persistence.criteria.Predicate;
@@ -24,7 +26,7 @@ public class SubmissionSpecs {
             var predicates = new ArrayList<Predicate>();
 
             // ensure the row is actually the subclass type
-            predicates.add(cb.equal(root.type(), PollutionReport.class));
+            predicates.add(cb.equal(pollutionRoot.type(), PollutionReport.class));
 
             Expression<Double> pm25 = pollutionRoot.get("pm25");
             if (c.minPM25 != null && c.maxPM25 != null) {
@@ -50,35 +52,30 @@ public class SubmissionSpecs {
     
     public static Specification<Submission> byFilterCriteria(FilterCriteria c) {
         return (root, query, cb) -> {
+            final Root<?> realRoot;
+
+            if (SubmissionType.SPECIES.equals(c.submissionType)) {
+                realRoot = cb.treat(root, SpeciesSpotting.class);
+            } else if (SubmissionType.POLLUTION.equals(c.submissionType)) {
+                realRoot = cb.treat(root, PollutionReport.class);
+            } else {
+                realRoot = root;
+            }
+
             var predicates = new ArrayList<Predicate>();
-            if (c.minTemperature != null)
-                predicates.add(cb.ge(root.get("temperatureCelsius"), c.minTemperature));
-            if (c.maxTemperature != null)
-                predicates.add(cb.le(root.get("temperatureCelsius"), c.maxTemperature));
-//            if (c.minPM25 != null)
-//                predicates.add(cb.or(cb.isNull(root.get("pm25")), cb.ge(root.get("pm25"), c.minPM25)));
-//            if (c.maxPM25 != null)
-//                predicates.add(cb.or(cb.isNull(root.get("pm25")), cb.le(root.get("pm25"), c.maxPM25)));
-
-
-
-
-//            if (c.minPM10 != null)
-//                predicates.add(cb.ge(root.get("pm10"), c.minPM10));
-//            if (c.maxPM10 != null)
-//                predicates.add(cb.le(root.get("pm10"), c.maxPM10));
-
-            //Not sure why between is allowed to use Instants and not ge or le
-//            if (c.lowestObservedDate != null && c.highestObservedDate != null)
-//                predicates.add(cb.between(root.get("observedAt"), c.lowestObservedDate, c.highestObservedDate));
+            if (c.minTemperature != null && c.maxTemperature != null) {
+                predicates.add(cb.between(realRoot.get("temperatureCelsius"), c.minTemperature, c.maxTemperature));
+            }
+            else if (c.minTemperature != null)
+                predicates.add(cb.ge(realRoot.get("temperatureCelsius"), c.minTemperature));
+            else if (c.maxTemperature != null)
+                predicates.add(cb.le(realRoot.get("temperatureCelsius"), c.maxTemperature));
 
             return cb.and(predicates.toArray(new Predicate[0]));
         };
     }
 
-
-
-    public static Specification<Submission> intersects(Geometry bbox) {
+     public static Specification<Submission> intersects(Geometry bbox) {
         return (root, query, cb) -> {
             // Hibernate 6 + PostGIS: call the SQL function directly
             Expression<Boolean> fn = cb.function(
