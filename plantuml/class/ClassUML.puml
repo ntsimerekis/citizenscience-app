@@ -1,21 +1,31 @@
 @startuml
 
+'ENTITY
 class Submission {
-    - submissionID: long
-    - user: User
+    - id: long
+    - submissionStatus: SubmissionStatus
     - location: Point
     - note: String
-    - dateTime: LocalDateTime
-    + getSummary(): String
-    + isComplete(): boolean
+    - createdAt: LocalDateTime
+    - observedAt: LocalDateTime
+    - temperatureCelsius: Double
+    - altitudeMeters: Double
+    + getSubmissionId(): String
+    + getStatus(): SubmissionStatus
+    + setStatus(): SubmissionStatus
+    + getCreatedAt(): LocalDateTime
+    + setCreatedAt(): LocalDateTime
+    + getTemperatureCelsius(): Double
+    + setTemperatureCelsius(): Double
+    + getAltitudeMeters(): Double
+    + setAltitudeMeters(): Double
 }
 
 class SpeciesSpotting {
-    - species: Species
-    - temperature: float
-    - altitude: float
     - photoUrl: String
-    + validate(): boolean
+    + isValid(): boolean
+    + getSpecies(): Species
+    + setSpecies(): Species
 }
 
 class Species {
@@ -24,83 +34,19 @@ class Species {
 }
 
 class PollutionReport {
-    - location: Point
     - sensorType: String
-    - user: User
-    - pm25: float
-    - pm10: float
-    - duration: float
-    + averagePM(): Float
-}
+    - pm25: Double
+    - pm10: Double
+    - durationHours: Double
 
-class SubmissionUIForm {
-    + display()
-    + collectInput()
-    + validate()
-    + submit()
-}
-
-class ExternalMapUI {
-
-}
-
-class MapController {
-    - loadBlips(fullMapArea: Geometry)
-    - handleBlipClick(blip: Blip)
-    + applyFilters(criteria: FilterCriteria)
-}
-note right
-Map Controller handles input from external MapUI API
-end note
-
-ExternalMapUI --> MapController
-
-class MarkerFeature {
-}
-note right: This as an API Class
-
-class Blip {
-    - color: Color
-    - isClicked: boolean
-    - isExpanded: boolean
-    + display()
-    + hide()
-    + showPopupWindow()
-    + createBlip(submission: Submission)
-}
-
-MarkerFeature <|-- Blip
-
-enum Color {
-    Red
-    Blue
-}
-
-class SubmissionPopUpWindow {
-    + displaySummary()
-    + expandDetails()
-}
-
-class FilterUIComponent {
-    + openFilterPanel()
-    + collectCriteria(): FilterCriteria
-    + clearFilters()
-}
-
-class FilterCriteria {
-    + startDate: LocalDateTime
-    + endDate: LocalDateTime
-    + submissionType: SubmissionType
-    + speciesName: String
-    + minPM25: float
-    + maxPM25: float
-    + minPM10: float
-    + maxPM10: float
-}
-
-class ProfileUI {
-    + showProfile(user: User)
-    + editProfile(user: User)
+    + getSensorType(): String
+    + setSensorType(String)
+    + getPM25(): Double
+    + setPM25(Double)
+    + getPM10(): Double
+    + setPM10(Double)
+    + getDurationHours()
+    + setDurationHours(Double)
 }
 
 class User {
@@ -119,41 +65,202 @@ class User {
     + deactivateAccount()
 }
 
-enum UserRole {
-    CITIZEN
-    ADMIN
-    MODERATOR
+'UI
+class AbstractSubmissionView<T extends Submission> {
+    # AbstractSubmissionView(T submission, String title)
+
+    + setReadOnly()
+    + allowWrite()
+    + refreshFields()
+    + getCoordinate()
+
+    - configureStyle(String title)
+    - createCoordinateFields()
+    - bindCoordinateFields()
+    - createFormLayout()
+
+    # createFields()
+    # bindFields()
+    # getFormComponents()
+    # extractCoordinates()
 }
 
-class SubmissionRepository {
-    + saveSubmission(submission: Submission)
+class SpeciesSubmissionView {
+    + SpeciesSubmissionView(SpeciesSpotting)
+    + setSpeciesSuggestions(Function<String, List<String>> lambda)
+}
+
+class PollutionReportView {
+    + PollutionReportView(PollutionReport)
+}
+
+AbstractSubmissionView <-- SpeciesSubmissionView
+AbstractSubmissionView <-- PollutionReportView
+
+class SubmissionViewFactory {
+    + createSubmissionView()
+    + createSubmissionForm()
+}
+
+SubmissionViewFactory --> AbstractSubmissionView : creates implementation of
+
+'MAP
+class MapComponent {
+    + clearMap(MapClearEvent)
+    + getMap()
+}
+note right
+Map Controller just holds a Vaadin Map
+end note
+
+class MarkerFeature {
+}
+note right: This as a Vaadin SDK Class
+
+class Blip {
+    - Blip(Coordinate,Submission)
+
+    + createBlip(double, double): Blip
+    + createBlip(Submission): Blip
+}
+MarkerFeature <|-- Blip
+
+class GridComponent {
+    + set(List<Submission> submissions)
+}
+GridComponent --> MapView
+GridComponent --> BlipLoaderObserver
+
+class FilterCriteria {
+    + startDate: LocalDateTime
+    + endDate: LocalDateTime
+    + submissionType: SubmissionType
+    + speciesName: String
+    + minPM25: float
+    + maxPM25: float
+    + minPM10: float
+    + maxPM10: float
+}
+
+' Map Observers
+class SpringEventPublisher {
+    + registerListener()
+    + publish(Object Event)
+}
+note right: This is not a real class, I'm not sure what Spring actually uses
+
+class PublisherFacadeComponent {
+    + publishEvent(Object Event)
+    + steal(Publisher)
+}
+MapComponent --> PublisherFacadeComponent : publishes to
+PublisherFacadeComponent --> SpringEventPublisher
+
+interface Publisher {
+    + publish()
+}
+
+class AveragingComponent {
+    + newAveragingReport(AveragingDoneEvent)
+    + startAveragingMode()
+    + getBoxClick(AveragingEvent)
+    + publishCurrentReport(AveragingDoneEvent)
+    + stopAveragingMode()
+}
+AveragingComponent --> SpringEventPublisher: observes
+AveragingComponent --> PublisherFacadeComponent: steals from
+
+class AveragingPublisher {
+    + publish()
+}
+AveragingComponent *-- AveragingPublisher
+AveragingPublisher --> SpringEventPublisher : publishes to
+
+class BlipClickObserver {
+    + onRowClick(RowClickEvent)
+    + onBlipClick(MapFeatureClickEvent)
+    - openSubmission()
+}
+
+class SubmissionProxy {
+    + getSubmission(Long id)
+}
+BlipClickObserver --> SubmissionProxy : queries
+SubmissionProxy --> SubmissionService
+BlipClickObserver --> SpringEventPublisher : observes
+
+
+class BlipLoaderObserver {
+    + resetAfterClear(MapClearEvent)
+    + loadBlipsOnDrag(MapViewMoveEndEvent)
+    - loadBlips()
+}
+BlipLoaderObserver --> SpringEventPublisher : observes
+
+' REPOSITORY
+interface JpaRepository {
+    + save(Object)
+    + findAll(Example<S>)
+}
+note right
+    This interface is provided by Spring.
+    It contains many methods.
+    I only include methods here that I'm using
+end note
+
+interface SubmissionRepository {
     + findAllWithinArea(area: Geometry): List<Submission>
     + findByUser(user: User): List<Submission>
-    + filterSubmissions(criteria: FilterCriteria): List<Submission>
+}
+
+interface SpeciesRepository {
+    + fuzzySearchSpeciesName(String): List<Species>
 }
 
 class SubmissionService {
-
+    + findWithinGeometry(Geometry geometry): List<Submission>
+    + findById(Long id): Optional<Submission>
+    + findAllByCriteria(FilterCriteria criteria): List<Submission>
+    + save(Submission submission): Submission
+    + getAll(): List<Submission>
+    - byCriteria(FilterCriteria c): Specification<Submission>
 }
 
-class SpeciesRepository {
-    + saveSpecies(species: Species)
-    + ngramSearchSpeciesName(scienctificName: String)
-
-}
+SubmissionRepository --|> JpaRepository
+SpeciesRepository --|> JpaRepository
 
 SpeciesRepository "1" o-- "0..*" Species : persists >
+' END REPOSITORY
 
 Submission <|-- SpeciesSpotting
 Submission <|-- PollutionReport
-SubmissionUIForm "1" --> "1" Submission: creates >
 SpeciesSpotting "1" o-> "1" Species: is >
-Blip "1" *-- "1" Submission : represents >
-Blip "1" *-- "1" SubmissionPopUpWindow : spawns >
-MapController *-- Blip
-FilterUIComponent "1" --> "1" MapController : advises >
-FilterUIComponent "1" --> "0..*" FilterCriteria: generates >
+MapComponent *-- Blip
+MapView --> MapComponent
+FilterComponent "1" --> "1" BlipLoaderObserver : advises >
+FilterComponent "1" --> "0..*" FilterCriteria: generates >
 SubmissionRepository "1" o-- "0..*" Submission : persists >
-ProfileUI "1" --> "1" User : handles >
+ProfileView "1" --> "1" User : handles >
 User "1" --> "0..*" Submission : owns >
+
+SubmissionService --> SubmissionRepository : calls
+SubmissionService --> SpeciesRepository : calls
+BlipClickObserver --> SubmissionViewFactory : creates window from
+
+
+' Bucket Service
+class BucketService {
+    + getSignedDownloadURL(String): URL
+    + uploadSubmissionPhoto(Long, data, contentType)
+}
+
+' Geometry Helper
+class GeometryHelper {
+    + getJTSPoint(Coordinate)
+    + rectangleFromPoints()
+}
+
+class VaadinCoordinateAdapter {
+    + VaadinCoordinateAdapter(JTSCoordinate)
+}
 @enduml
