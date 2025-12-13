@@ -4,6 +4,9 @@ import com.tsimerekis.geometry.GeometryHelper;
 import com.tsimerekis.map.Blip;
 import com.tsimerekis.map.FilterComponent;
 import com.tsimerekis.map.MapComponent;
+import com.tsimerekis.map.averaging.event.MapClearEvent;
+import com.tsimerekis.map.ui.GridComponent;
+import com.tsimerekis.submission.entity.Submission;
 import com.tsimerekis.submission.service.SubmissionService;
 import com.vaadin.flow.component.map.Map;
 import com.vaadin.flow.component.map.configuration.Extent;
@@ -22,6 +25,7 @@ import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
 
 import java.util.HashMap;
+import java.util.List;
 
 @Component
 @UIScope
@@ -37,10 +41,21 @@ public class BlipLoaderObserver {
 
     private final FilterComponent filterComponent;
 
-    public BlipLoaderObserver(@Autowired MapComponent mapComponent, @Autowired SubmissionService submissionService, @Autowired FilterComponent filterComponent) {
+    private final GridComponent gridComponent;
+
+    public BlipLoaderObserver(@Autowired MapComponent mapComponent,
+                              @Autowired SubmissionService submissionService,
+                              @Autowired FilterComponent filterComponent,
+                              @Autowired GridComponent gridComponent) {
         this.map = mapComponent.getMap();
         this.submissionService = submissionService;
         this.filterComponent = filterComponent;
+        this.gridComponent = gridComponent;
+    }
+
+    @EventListener
+    public void resetAfterClear(MapClearEvent event) {
+        loaded.clear();
     }
 
     @EventListener
@@ -68,7 +83,11 @@ public class BlipLoaderObserver {
     private void loadBlips(Geometry geometry) {
         final FeatureLayer features = map.getFeatureLayer();
 
-        submissionService.findAllByCriteriaAndWithinGeometry(filterComponent.getFilterCriteria(), geometry)
+        final List<Submission> submissions = submissionService.findAllByCriteriaAndWithinGeometry(filterComponent.getFilterCriteria(), geometry);
+
+        gridComponent.set(submissions);
+
+        submissions
                 .stream()
                 .filter(feature -> loaded.putIfAbsent(feature.getId(), 0) == null)
                 .map(Blip::createBlip)

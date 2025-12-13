@@ -1,6 +1,7 @@
 package com.tsimerekis.map.observers;
 
 import com.tsimerekis.map.Blip;
+import com.tsimerekis.map.averaging.event.RowClickEvent;
 import com.tsimerekis.map.proxy.SubmissionProxy;
 import com.tsimerekis.map.ui.DialogHelper;
 import com.tsimerekis.submission.entity.PollutionReport;
@@ -8,6 +9,7 @@ import com.tsimerekis.submission.entity.SpeciesSpotting;
 import com.tsimerekis.submission.entity.Submission;
 import com.tsimerekis.submission.ui.PollutionReportView;
 import com.tsimerekis.submission.ui.SpeciesSubmissionView;
+import com.tsimerekis.submission.ui.SubmissionViewFactory;
 import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.map.events.MapFeatureClickEvent;
 import com.vaadin.flow.component.notification.Notification;
@@ -23,10 +25,19 @@ import java.util.Optional;
 @UIScope
 public class BlipClickObserver {
 
+    private final SubmissionViewFactory submissionViewFactory;
+
     private final SubmissionProxy submissionProxy;
 
-    public BlipClickObserver(@Autowired SubmissionProxy submissionProxy) {
+    public BlipClickObserver(@Autowired SubmissionProxy submissionProxy,
+                             @Autowired SubmissionViewFactory submissionViewFactory) {
         this.submissionProxy = submissionProxy;
+        this.submissionViewFactory = submissionViewFactory;
+    }
+
+    @EventListener
+    public void onRowClick(RowClickEvent rowClickEvent) {
+        openSubmission(rowClickEvent.submission());
     }
 
     @EventListener
@@ -45,13 +56,7 @@ public class BlipClickObserver {
 
             Optional<Submission> submission = submissionProxy.getSubmission(id);
             submission.ifPresentOrElse( s -> {
-                        if (s instanceof PollutionReport pollutionReport) {
-                            Notification.show("Opening pollution report " + id);
-                            openSubmissionWindow(pollutionReport);
-                        } else if (s instanceof SpeciesSpotting speciesSpotting) {
-                            Notification.show("Opening species spotting " + id);
-                            openSubmissionWindow(speciesSpotting);
-                        }
+                        openSubmission(s);
                     },
                     () -> {
                         Notification.show("Unknown submission type");
@@ -60,19 +65,9 @@ public class BlipClickObserver {
         }
     }
 
-
-
-    private void openSubmissionWindow(PollutionReport pollutionReport) {
+    private void openSubmission(Submission submission) {
         final Dialog dialog = DialogHelper.submissionDialog();
-        dialog.add(new PollutionReportView(pollutionReport));
-
-        dialog.open();
-    }
-
-    private void openSubmissionWindow(SpeciesSpotting speciesSpotting) {
-        final Dialog dialog = DialogHelper.submissionDialog();
-        dialog.add(new SpeciesSubmissionView(speciesSpotting));
-
+        dialog.add(submissionViewFactory.createSubmissionView(submission));
         dialog.open();
     }
 }
