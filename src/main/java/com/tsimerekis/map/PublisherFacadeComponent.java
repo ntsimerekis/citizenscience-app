@@ -3,12 +3,11 @@ package com.tsimerekis.map;
 import com.vaadin.flow.spring.annotation.UIScope;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
-import org.springframework.context.ApplicationEventPublisherAware;
 import org.springframework.stereotype.Component;
 
 @Component
 @UIScope
-public class PublisherComponent implements Publisher {
+public class PublisherFacadeComponent implements Publisher {
 
     private boolean stealMode = false;
 
@@ -16,7 +15,7 @@ public class PublisherComponent implements Publisher {
 
     private final ApplicationEventPublisher applicationEventPublisher;
 
-    public PublisherComponent(@Autowired ApplicationEventPublisher publisher) {
+    public PublisherFacadeComponent(@Autowired ApplicationEventPublisher publisher) {
         applicationEventPublisher = publisher;
     }
 

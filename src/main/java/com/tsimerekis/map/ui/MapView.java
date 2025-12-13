@@ -2,7 +2,9 @@ package com.tsimerekis.map.ui;
 
 import com.tsimerekis.map.FilterComponent;
 import com.tsimerekis.map.MapComponent;
+import com.tsimerekis.map.PublisherFacadeComponent;
 import com.tsimerekis.map.averaging.AveragingComponent;
+import com.tsimerekis.map.averaging.event.MapClearEvent;
 import com.tsimerekis.submission.entity.PollutionReport;
 import com.tsimerekis.submission.entity.SpeciesSpotting;
 import com.tsimerekis.submission.repository.FilterCriteria;
@@ -15,15 +17,14 @@ import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.Menu;
 import com.vaadin.flow.router.Route;
-import com.vaadin.flow.server.auth.AnonymousAllowed;
 import jakarta.annotation.security.PermitAll;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 
 @Route("/map")
-@PermitAll
 @Menu(order = 100, icon = "vaadin:map-marker", title = "Map View")
+@PermitAll
 public class MapView extends Main {
 
     private static final Logger log = LogManager.getLogger(MapView.class);
@@ -35,7 +36,9 @@ public class MapView extends Main {
     MapView(@Autowired MapComponent mapComponent,
             @Autowired FilterComponent filterComponent,
             @Autowired AveragingComponent averagingComponent,
-            @Autowired SubmissionViewFactory submissionViewFactory) {
+            @Autowired SubmissionViewFactory submissionViewFactory,
+            @Autowired PublisherFacadeComponent publisher,
+            @Autowired GridComponent gridComponent) {
 
         //Map
         this.map = mapComponent.getMap();
@@ -63,7 +66,12 @@ public class MapView extends Main {
             FilterCriteria filterCriteria = filterComponent.getFilterCriteria();
 
             dialog.add(new FilterBox(filterCriteria));
+            dialog.addDialogCloseActionListener(event -> {
+                publisher.publishEvent(new MapClearEvent());
+                dialog.close();
+            });
             dialog.open();
+
             Notification.show("Filter Criteria clicked");
         });
 
@@ -71,8 +79,13 @@ public class MapView extends Main {
             averagingComponent.startAveragingMode();
         });
 
-        add(newSpeciesSpotting, newPollutionReport, newFilterCriteria, newAveragingReport);
+        Button clearMap = new Button("Clear Map", e -> {
+            publisher.publishEvent(new MapClearEvent());
+        });
+
+        add(newSpeciesSpotting, newPollutionReport, newFilterCriteria, newAveragingReport, clearMap);
 
         add(map);
+        add(gridComponent.getGrid());
     }
 }

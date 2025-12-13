@@ -1,5 +1,6 @@
 package com.tsimerekis.map.ui;
 
+import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.dialog.DialogVariant;
 
@@ -13,8 +14,11 @@ public class DialogHelper {
         dialog.setResizable(true);
         dialog.setWidth("520px");
         dialog.setMaxWidth("90vw");
-        dialog.getElement().setAttribute("aria-label", "Person details");
-
+        dialog.getElement().setAttribute("aria-label", "Submission Details");
+        dialog.add(new Button("Close", e -> {
+            dialog.close();
+            dialog.close();
+        }));
         return dialog;
     }
 }
