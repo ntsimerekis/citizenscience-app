@@ -3,16 +3,20 @@ package com.tsimerekis.submission.ui;
 import com.tsimerekis.submission.entity.SpeciesSpotting;
 import com.tsimerekis.submission.entity.Species;
 import com.vaadin.flow.component.Component;
+import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.datetimepicker.DateTimePicker;
 import com.vaadin.flow.component.textfield.NumberField;
 import com.vaadin.flow.component.textfield.TextArea;
-import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.binder.Binder;
+
+import java.util.List;
+import java.util.function.Function;
 
 public class SpeciesSubmissionView extends AbstractSubmissionView<SpeciesSpotting> {
     protected Binder<Species> speciesBinder;
 
-    private TextField speciesNameField;
+    private ComboBox<String> speciesNameField;
+//    private TextField speciesNameField;
     private TextArea note;
     private DateTimePicker dateTimePicker;
     private NumberField temperature;
@@ -20,11 +24,11 @@ public class SpeciesSubmissionView extends AbstractSubmissionView<SpeciesSpottin
 
     public SpeciesSubmissionView(final SpeciesSpotting speciesSpotting) {
         super(speciesSpotting, "Species Spotting");
-        if (speciesSpotting.getSpecies() != null) {
-            speciesBinder.setBean(speciesSpotting.getSpecies());
-        } else {
-            speciesBinder.setBean(new Species());
+        if (speciesSpotting.getSpecies() == null) {
+            speciesSpotting.setSpecies(new Species());
         }
+
+        speciesBinder.setBean(speciesSpotting.getSpecies());
     }
 
     public Species getSpecies() {
@@ -33,7 +37,10 @@ public class SpeciesSubmissionView extends AbstractSubmissionView<SpeciesSpottin
 
     @Override
     protected void createFields() {
-        speciesNameField = new TextField("Species"); components.add(speciesNameField);
+        speciesNameField = new ComboBox<>("Species");
+        speciesNameField.setItems(List.of());
+        speciesNameField.setAllowCustomValue(true);
+
         note = new TextArea("Note"); components.add(note);
         dateTimePicker = new DateTimePicker("Date and Time Spotted"); components.add(dateTimePicker);
         temperature = new NumberField("Temperature"); components.add(temperature);
@@ -45,7 +52,9 @@ public class SpeciesSubmissionView extends AbstractSubmissionView<SpeciesSpottin
         //java is weird man
         speciesBinder = new Binder<>();
 
-        speciesBinder.forField(speciesNameField).asRequired().bind(Species::getSpeciesName, Species::setSpeciesName);
+        speciesBinder.forField(speciesNameField)
+                .asRequired()
+                .bind(Species::getSpeciesName, Species::setSpeciesName);
 
         binder.forField(note).bind(SpeciesSpotting::getNote, SpeciesSpotting::setNote);
         binder.forField(dateTimePicker).asRequired().bind(SpeciesSpotting::getObservedAt, SpeciesSpotting::setObservedAt);
@@ -65,4 +74,12 @@ public class SpeciesSubmissionView extends AbstractSubmissionView<SpeciesSpottin
         return bean.getLocation() != null ? bean.getLocation().getCoordinate() : null;
     }
 
+    public void setSpeciesSuggestions(Function<String, List<String>> lambda) {
+        speciesNameField.addCustomValueSetListener(event -> {
+            String customValue = event.getDetail().trim();
+
+            speciesNameField.setItems(lambda.apply(customValue));
+            speciesNameField.setValue(customValue);
+        });
+    }
 }

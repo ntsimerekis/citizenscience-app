@@ -1,10 +1,15 @@
 package com.tsimerekis.submission.ui;
 
 import com.tsimerekis.geometry.GeometryHelper;
+import com.tsimerekis.submission.entity.Submission;
 import com.vaadin.flow.component.HasValueAndElement;
 import com.vaadin.flow.component.Component;
+import com.vaadin.flow.component.Unit;
 import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.html.H2;
+import com.vaadin.flow.component.map.Map;
+import com.vaadin.flow.component.map.configuration.feature.MarkerFeature;
+import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.NumberField;
 import com.vaadin.flow.data.binder.Binder;
@@ -14,7 +19,7 @@ import org.locationtech.jts.geom.Point;
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class AbstractSubmissionView<T> extends VerticalLayout {
+public abstract class AbstractSubmissionView<T extends Submission> extends VerticalLayout {
     protected final Binder<T> binder = new Binder<>();
     protected final Binder<Coordinate> coordinateBinder = new Binder<>();
     protected final List<HasValueAndElement> components = new ArrayList<>();
@@ -28,7 +33,9 @@ public abstract class AbstractSubmissionView<T> extends VerticalLayout {
         if (existing != null) {
             coordinateBinder.setBean(existing);
         } else {
-            coordinateBinder.setBean(new Coordinate());
+            final Coordinate newCoord = new Coordinate();
+            coordinateBinder.setBean(newCoord);
+            bean.setLocation(GeometryHelper.gf.createPoint(newCoord));
         }
 
         configureStyle(title);
@@ -86,6 +93,11 @@ public abstract class AbstractSubmissionView<T> extends VerticalLayout {
         this.components.forEach(c -> c.setReadOnly(false));
         this.binder.setReadOnly(false);
         this.coordinateBinder.setReadOnly(false);
+    }
+
+    public void refreshFields() {
+        binder.refreshFields();
+        coordinateBinder.refreshFields();
     }
 
     //A little messy

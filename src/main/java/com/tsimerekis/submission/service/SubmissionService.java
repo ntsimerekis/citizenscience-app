@@ -18,6 +18,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class SubmissionService {
@@ -48,8 +49,8 @@ public class SubmissionService {
     public List<Submission> findAllByCriteriaAndWithinGeometry(FilterCriteria criteria, Geometry geometry) {
         final Specification<Submission> specification =
             Specification.<Submission>unrestricted()
-//                .and(SubmissionSpecs.byFilterCriteria(criteria))
-//                .and(SubmissionSpecs.forPollutionReport(criteria))
+                .and(SubmissionSpecs.byFilterCriteria(criteria))
+                .and(SubmissionSpecs.forPollutionReport(criteria))
                 .and(SubmissionSpecs.intersects(geometry));
 
         var submissions = submissionRepository.findAll(specification);
@@ -64,7 +65,8 @@ public class SubmissionService {
         }
     }
 
-    public void save(SpeciesSpotting submission) {
+    public Submission save(SpeciesSpotting submission) {
+        final Submission submissionSaved;
         if (submission.isValid()) {
             final Species species = submission.getSpecies();
             ExampleMatcher matcher = ExampleMatcher.matching().withIgnoreCase().withStringMatcher(ExampleMatcher.StringMatcher.EXACT);
@@ -77,7 +79,7 @@ public class SubmissionService {
                 submission.setSpecies(speciesRepository.save(species));
             }
 
-            submissionRepository.save(submission);
+            submissionSaved = submissionRepository.save(submission);
         } else {
             if (submission.getSpecies() == null) {
                 throw new MissingSpeciesException();
@@ -85,10 +87,19 @@ public class SubmissionService {
 
             throw new InvalidSubmissionException();
         }
+
+        return submissionSaved;
     }
 
     public List<Submission> getAll() {
         return submissionRepository.findAll();
+    }
+
+    public List<String> ngramSearchSpecies(String species) {
+        return speciesRepository.fuzzySearchSpeciesName(species)
+                .stream()
+                .map(Species::getSpeciesName)
+                .toList();
     }
 
 }

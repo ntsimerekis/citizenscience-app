@@ -10,6 +10,11 @@ public class SpeciesSpotting extends Submission {
     @JoinColumn(name = "species_species_id")
     private Species species;
 
+    @Override
+    public boolean isValid() {
+        return super.isValid() && species != null && species.getSpeciesName() != null && !species.getSpeciesName().isEmpty();
+    }
+
     public Species getSpecies() {
         return species;
     }

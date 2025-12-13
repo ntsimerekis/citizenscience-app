@@ -4,6 +4,7 @@
 .settings
 .project
 .classpath
+dev/
 
 *.iml
 .DS_Store

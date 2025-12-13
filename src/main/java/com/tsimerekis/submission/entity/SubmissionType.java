@@ -8,6 +8,6 @@ public class SubmissionType {
     public final static String POLLUTION = "POLLUTION";
 
     public static Collection<String> getAllTypes() {
-        return Arrays.asList(SPECIES, POLLUTION);
+        return Arrays.asList(SPECIES, POLLUTION, "ALL");
     }
 }

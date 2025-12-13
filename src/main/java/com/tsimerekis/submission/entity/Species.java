@@ -18,7 +18,7 @@ public class Species {
     }
 
     public Species(String speciesName) {
-        this.speciesName = speciesName.toLowerCase();
+        setSpeciesName(speciesName);
     }
 
     public void setSpeciesName(String speciesName) {
