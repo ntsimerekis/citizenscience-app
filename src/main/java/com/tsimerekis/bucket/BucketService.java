@@ -89,7 +89,6 @@ public class BucketService {
                     .build();
             HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
 
-//            assertEquals(200, response.statusCode());
             System.out.println(url);
         } catch (URISyntaxException | InterruptedException | IOException e) {
             throw new RuntimeException(e);
