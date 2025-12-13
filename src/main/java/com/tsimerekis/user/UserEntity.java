@@ -1,66 +1,79 @@
 package com.tsimerekis.user;
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
 import jakarta.persistence.*;
 
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.List;
-import java.util.stream.Collectors;
-
-//public class UserEntity implements UserDetails {
+@Entity
 public class UserEntity {
     private static final String AUTHORITIES_DELIMITER = "::";
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private Long id;
 
     private String username;
 
-    private String password;
+    private String fullName;
 
-    private String authorities;
+    private String profilePicturePath;
 
-//    @Override
-    public Collection<? extends GrantedAuthority> getAuthorities() {
-        return Arrays.stream(this.authorities.split(AUTHORITIES_DELIMITER))
-                .map(SimpleGrantedAuthority::new)
-                .collect(Collectors.toList());
+    private String biography;
 
+    private transient UserDetails userDetails;
+
+    public UserDetails getUserDetails() {
+        return userDetails;
     }
 
-//    @Override
-    public String getPassword() {
-        return password;
+    public void setUserDetails(UserDetails userDetails) {
+        this.userDetails = userDetails;
     }
 
-//    @Override
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
     public String getUsername() {
         return username;
     }
 
-//    @Override
-//    public boolean isAccountNonExpired() {
-//        return UserDetails.super.isAccountNonExpired();
-//    }
-
-//    @Override
-//    public boolean isAccountNonLocked() {
-//        return UserDetails.super.isAccountNonLocked();
-//    }
-
-//    @Override
-    public boolean isCredentialsNonExpired() {
-//        return UserDetails.super.isCredentialsNonExpired();
-        return true;
+    public void setUsername(String username) {
+        this.username = username;
     }
 
-//    @Override
-    public boolean isEnabled() {
-//        return UserDetails.super.isEnabled();
-        return true;
+    public String getFullName() {
+        return fullName;
+    }
+
+    public String getFirstName() {
+        return fullName.split(" ")[0];
+    }
+
+    public String getLastName() {
+        return fullName.split(" ")[1];
+    }
+
+    public void setFullName(String fullName) {
+        this.fullName = fullName;
+    }
+
+    public String getProfilePicturePath() {
+        return profilePicturePath;
+    }
+
+    public void setProfilePicturePath(String profilePictureURL) {
+        this.profilePicturePath = profilePictureURL;
+    }
+
+    public String getBiography() {
+        return biography;
+    }
+
+    public void setBiography(String biography) {
+        this.biography = biography;
     }
 }
