@@ -2,7 +2,10 @@ package com.tsimerekis.map.averaging;
 
 import com.tsimerekis.geometry.GeometryHelper;
 import com.tsimerekis.map.FilterComponent;
-import com.tsimerekis.map.PublisherComponent;
+import com.tsimerekis.map.PublisherFacadeComponent;
+import com.tsimerekis.map.averaging.event.AveragingDoneEvent;
+import com.tsimerekis.map.averaging.event.AveragingEvent;
+import com.tsimerekis.map.averaging.ui.AveragingReportDialog;
 import com.tsimerekis.science.AveragingReport;
 import com.tsimerekis.submission.entity.Submission;
 import com.tsimerekis.submission.repository.FilterCriteria;
@@ -24,7 +27,7 @@ public class AveragingComponent {
 
     private boolean averagingMode = false;
 
-    private PublisherComponent publisherComponent;
+    private PublisherFacadeComponent publisherFacadeComponent;
 
     private AveragingPublisher averagingPublisher;
 
@@ -36,12 +39,12 @@ public class AveragingComponent {
 
     private Point[] points;
 
-    public AveragingComponent(@Autowired PublisherComponent publisherComponent,
+    public AveragingComponent(@Autowired PublisherFacadeComponent publisherFacadeComponent,
                               @Autowired AveragingPublisher averagingPublisher,
                               @Autowired FilterComponent filterComponent,
                               @Autowired SubmissionService submissionService,
                               @Autowired ApplicationEventPublisher eventPublisher) {
-        this.publisherComponent = publisherComponent;
+        this.publisherFacadeComponent = publisherFacadeComponent;
         this.averagingPublisher = averagingPublisher;
         this.filterComponent = filterComponent;
         this.submissionService = submissionService;
@@ -51,7 +54,7 @@ public class AveragingComponent {
     public boolean startAveragingMode() {
         if (!averagingMode) {
             averagingMode = true;
-            publisherComponent.startStealing(averagingPublisher);
+            publisherFacadeComponent.startStealing(averagingPublisher);
             points = new Point[2];
         }
 
@@ -77,6 +80,13 @@ public class AveragingComponent {
         }
     }
 
+    @EventListener
+    public void newAveragingReport(AveragingDoneEvent event) {
+        final AveragingReport report = event.getReport();
+
+        AveragingReportDialog.openFor(report);
+    }
+
     public void publishCurrentReport() {
         final Geometry rectangle = GeometryHelper.rectangleFromPoints(points[0], points[1]);
         final FilterCriteria filterCriteria = filterComponent.getFilterCriteria();
@@ -91,7 +101,7 @@ public class AveragingComponent {
 
     private void stopAveragingMode() {
         //STOP STEALING!
-        publisherComponent.stopStealing();
+        publisherFacadeComponent.stopStealing();
 
         publishCurrentReport();
         points = new Point[2];

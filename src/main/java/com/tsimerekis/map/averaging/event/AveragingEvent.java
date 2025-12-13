@@ -1,4 +1,4 @@
-package com.tsimerekis.map.averaging;
+package com.tsimerekis.map.averaging.event;
 
 import com.vaadin.flow.component.map.events.MapClickEvent;
 

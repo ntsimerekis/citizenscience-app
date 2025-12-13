@@ -1,6 +1,7 @@
 package com.tsimerekis.map.averaging;
 
 import com.tsimerekis.map.Publisher;
+import com.tsimerekis.map.averaging.event.AveragingEvent;
 import com.vaadin.flow.component.map.events.MapClickEvent;
 import com.vaadin.flow.spring.annotation.UIScope;
 import org.springframework.beans.factory.annotation.Autowired;
