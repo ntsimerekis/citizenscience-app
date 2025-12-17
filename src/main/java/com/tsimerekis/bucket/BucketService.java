@@ -6,6 +6,7 @@ import com.google.cloud.storage.Storage;
 import com.google.cloud.storage.StorageOptions;
 import com.google.cloud.storage.HttpMethod;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import com.google.auth.oauth2.GoogleCredentials;
@@ -26,17 +27,20 @@ import java.util.HashMap;
 @Service
 public class BucketService {
 
-    private final String projectId = "";
+    private final String projectId;
 
-    private final String bucketName = "";
+    private final String bucketName;
 
     private final Storage storage;
 
-    private BucketService() {
+    private BucketService(@Value("${cloud.project-id}") String projectId, @Value("${cloud.bucket}") String bucketName) {
+        this.projectId = projectId;
+        this.bucketName = bucketName;
+
         try {
             this.storage = StorageOptions.newBuilder()
                     .setProjectId(projectId)
-                    .setCredentials(GoogleCredentials.fromStream(new FileInputStream("")))
+                    .setCredentials(GoogleCredentials.fromStream(new FileInputStream("/secrets/citizenscience-signer-key.json")))
                     .build()
                     .getService();
         } catch (IOException e) {
@@ -64,35 +68,6 @@ public class BucketService {
         storage.createFrom(blobInfo, data);
 
         return objectName;
-    }
-
-    public static void main(String[] args) {
-        GoogleCredentials credentials =
-                null;
-        try {
-            credentials = GoogleCredentials.getApplicationDefault();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-
-        System.out.println(credentials);
-
-        final BucketService bucketService = new BucketService();
-
-        final URL url = bucketService.getSignedDownloadURL("bronco.png");
-
-        try (HttpClient client = HttpClient.newHttpClient()) {
-
-            HttpRequest request = HttpRequest.newBuilder()
-                    .uri(url.toURI())
-                    .GET()
-                    .build();
-            HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
-
-            System.out.println(url);
-        } catch (URISyntaxException | InterruptedException | IOException e) {
-            throw new RuntimeException(e);
-        }
     }
 
 }
