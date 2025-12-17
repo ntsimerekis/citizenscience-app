@@ -74,6 +74,11 @@
             <artifactId>postgresql</artifactId>
         </dependency>
         <dependency>
+            <groupId>com.google.cloud.sql</groupId>
+            <artifactId>postgres-socket-factory</artifactId>
+            <version>1.27.1</version>
+        </dependency>
+        <dependency>
             <groupId>com.google.cloud</groupId>
             <artifactId>google-cloud-storage</artifactId>
         </dependency>
