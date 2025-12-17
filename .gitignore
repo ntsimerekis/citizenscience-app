@@ -5,6 +5,7 @@
 .project
 .classpath
 dev/
+secrets/
 
 *.iml
 .DS_Store
