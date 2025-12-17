@@ -23,6 +23,7 @@ RUN --mount=type=cache,target=/root/.m2 \
     --mount=type=secret,id=offlineKey \
     sh -c 'PRO_KEY=$(jq -r ".proKey // empty" /run/secrets/proKey 2>/dev/null || echo "") && \
     OFFLINE_KEY=$(cat /run/secrets/offlineKey 2>/dev/null || echo "") && \
+    chmod +x ./mvnw && \
     ./mvnw clean package -Pproduction -DskipTests'
 
 FROM eclipse-temurin:21-jre-alpine
