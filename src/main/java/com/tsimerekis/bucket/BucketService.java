@@ -33,14 +33,14 @@ public class BucketService {
 
     private final Storage storage;
 
-    private BucketService(@Value("${cloud.project-id}") String projectId, @Value("${cloud.bucket}") String bucketName) {
+    private BucketService(@Value("${cloud.project-id}") String projectId, @Value("${cloud.bucket}") String bucketName, @Value("${cloud.secrets-path}") String secretsPath) {
         this.projectId = projectId;
         this.bucketName = bucketName;
 
         try {
             this.storage = StorageOptions.newBuilder()
                     .setProjectId(projectId)
-                    .setCredentials(GoogleCredentials.fromStream(new FileInputStream("/secrets/citizenscience-signer-key.json")))
+                    .setCredentials(GoogleCredentials.fromStream(new FileInputStream(secretsPath)))
                     .build()
                     .getService();
         } catch (IOException e) {
